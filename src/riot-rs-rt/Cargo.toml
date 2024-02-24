@@ -17,6 +17,10 @@ cortex-m-semihosting = { workspace = true, optional = true }
 portable-atomic = { version = "1.6.0", features = ["critical-section"] }
 rtt-target = { version = "0.4.0", optional = true }
 
+[target.'cfg(context = "esp")'.dependencies]
+esp-hal = { workspace = true, default-features = false }
+rtt-target = { version = "0.4.0", optional = true }
+
 [features]
 #default = ["threading"]
 threading = ["dep:riot-rs-threads"]

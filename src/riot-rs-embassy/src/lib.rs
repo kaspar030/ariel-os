@@ -8,8 +8,9 @@ pub mod define_peripherals;
 
 #[cfg_attr(context = "nrf52", path = "arch/nrf52.rs")]
 #[cfg_attr(context = "rp2040", path = "arch/rp2040.rs")]
+#[cfg_attr(context = "esp", path = "arch/esp")]
 #[cfg_attr(
-    not(any(context = "nrf52", context = "rp2040")),
+    not(any(context = "nrf52", context = "rp2040", context = "esp")),
     path = "arch/dummy.rs"
 )]
 pub mod arch;
