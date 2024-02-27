@@ -59,7 +59,7 @@ pub(crate) fn init() {
     riot_rs_rt::debug::println!("riot-rs-embassy::init()");
     let p = arch::init(Default::default());
 
-    #[cfg(any(context = "nrf52", context = "rp2040"))]
+    #[cfg(not(context = "esp"))]
     let p = crate::arch::OptionalPeripherals::from(p);
 
     #[cfg(any(context = "nrf52", context = "rp2040"))]
