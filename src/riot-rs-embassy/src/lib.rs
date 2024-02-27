@@ -8,7 +8,7 @@ pub mod define_peripherals;
 
 #[cfg_attr(context = "nrf52", path = "arch/nrf52.rs")]
 #[cfg_attr(context = "rp2040", path = "arch/rp2040.rs")]
-#[cfg_attr(context = "esp", path = "arch/esp")]
+#[cfg_attr(context = "esp", path = "arch/esp.rs")]
 #[cfg_attr(
     not(any(context = "nrf52", context = "rp2040", context = "esp")),
     path = "arch/dummy.rs"
@@ -57,9 +57,22 @@ pub static EMBASSY_TASKS: [Task] = [..];
 #[distributed_slice(riot_rs_rt::INIT_FUNCS)]
 pub(crate) fn init() {
     riot_rs_rt::debug::println!("riot-rs-embassy::init()");
-    let p = arch::OptionalPeripherals::from(arch::init(Default::default()));
-    EXECUTOR.start(arch::SWI);
-    EXECUTOR.spawner().spawn(init_task(p)).unwrap();
+    let p = arch::init(Default::default());
+
+    #[cfg(any(context = "nrf52", context = "rp2040"))]
+    {
+        EXECUTOR.start(arch::SWI);
+        EXECUTOR.spawner().spawn(init_task(p.into())).unwrap();
+    }
+
+    #[cfg(context = "esp")]
+    {
+        riot_rs_rt::debug::println!("riot-rs-embassy::init() starting executor");
+        EXECUTOR
+            .start(arch::interrupt::Priority::Priority1)
+            .spawn(init_task(p))
+            .unwrap();
+    }
 
     riot_rs_rt::debug::println!("riot-rs-embassy::init() done");
 }

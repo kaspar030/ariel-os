@@ -1,31 +1,34 @@
-pub(crate) use embassy_executor::InterruptExecutor as Executor;
-
 use esp32c3_hal::{
     clock::ClockControl,
     embassy::{
         self,
         executor::{FromCpu1, InterruptExecutor},
     },
-    interrupt::Priority,
-    peripherals::Peripherals,
     prelude::*,
 };
 
-pub type Executor = InterruptExecutor<FromCpu1>;
+pub(crate) use esp32c3_hal::interrupt::{self};
+pub use esp32c3_hal::peripherals::{OptionalPeripherals, Peripherals};
+
+pub(crate) type Executor = InterruptExecutor<FromCpu1>;
+pub static SWI: () = ();
+
+#[derive(Default)]
+pub struct Config {}
 
 #[interrupt]
 fn FROM_CPU_INTR1() {
     unsafe { crate::EXECUTOR.on_interrupt() }
 }
 
-pub fn init(config: Config) -> Peripherals {
-    let peripherals = Peripherals::take();
-    let system = peripherals.SYSTEM.split();
+pub fn init(_config: Config) -> OptionalPeripherals {
+    let mut peripherals = OptionalPeripherals::from(Peripherals::take());
+    let system = peripherals.SYSTEM.take().unwrap().split();
     let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
 
     embassy::init(
         &clocks,
-        esp32c3_hal::systimer::SystemTimer::new(peripherals.SYSTIMER),
+        esp32c3_hal::systimer::SystemTimer::new(peripherals.SYSTIMER.take().unwrap()),
     );
 
     peripherals

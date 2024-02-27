@@ -31,6 +31,17 @@ mod backend {
     }
 }
 
+#[cfg(all(feature = "debug-console", context = "esp"))]
+mod backend {
+    pub use esp_println::{print, println};
+    pub const EXIT_SUCCESS: Result<(), ()> = Ok(());
+    pub const EXIT_FAILURE: Result<(), ()> = Err(());
+    pub fn exit(_code: Result<(), ()>) {
+        loop {}
+    }
+    pub fn init() {}
+}
+
 #[cfg(not(feature = "debug-console"))]
 mod backend {
     pub const EXIT_SUCCESS: Result<(), ()> = Ok(());

@@ -10,9 +10,6 @@ contexts:
     env:
       RUSTFLAGS:
         - "-Clink-arg=--nmagic"
-        - "-Clink-arg=-Tlinkme.x"
-        - "-Clink-arg=-Tlink.x"
-        - "-Clink-arg=-Tdevice.x"
         - "-Clink-arg=${LINK_ARG_PREFIX}--no-eh-frame-hdr"
         - --cfg builder=\"${builder}\"
       FEATURES:
@@ -159,6 +156,8 @@ contexts:
     env:
       OBJCOPY: arm-none-eabi-objcopy
       RUSTFLAGS:
+        - -Clink-arg=-Tlink.x
+        - -Clink-arg=-Tdevice.x
         - -Clink-arg=-Tisr_stack.x
         - --cfg context=\"cortex-m\"
 
@@ -176,7 +175,8 @@ contexts:
       RUSTC_TARGET: thumbv7em-none-eabi
       CARGO_TARGET_PREFIX: CARGO_TARGET_THUMBV7EM_NONE_EABI
       RUSTFLAGS:
-        - "-Ctarget-cpu=cortex-m4"
+        - -Clink-arg=-Tlinkme.x
+        - -Ctarget-cpu=cortex-m4
         - --cfg armv7m
 
   - name: thumbv7m-none-eabi
@@ -266,15 +266,24 @@ contexts:
 
   - name: esp
     parent: riot-rs
-    selects:
-      - build_std
+    env:
+      RUSTFLAGS:
+        - --cfg context=\"esp\"
+        # linkall first
+        - -Clink-arg=-Tlinkall.x
+        - -Clink-arg=-Tlinkme-esp-fixup.x
+        - -Clink-arg=-Tlinkme.x
+        # this is needed for backtraces
+          #- -C force-frame-pointers
+      CARGO_ARGS:
+        - -Zbuild-std=core
+      CARGO_RUNNER: '"espflash flash --monitor"'
+
+  - name: esp32c3
+    parent: esp
     env:
       RUSTC_TARGET: riscv32imc-unknown-none-elf
       CARGO_TARGET_PREFIX: CARGO_TARGET_RISCV32IMC_UNKNOWN_NONE_ELF
-      CARGO_RUNNER: '"espflash flash --monitor"'
-      RUSTFLAGS:
-        - --cfg context=\"esp\"
-          #- -C force-frame-pointers
 
 modules:
   - name: release
@@ -438,6 +447,7 @@ builders:
           - rustup target add thumbv7m-none-eabi
           - rustup target add thumbv7em-none-eabi
           - rustup target add thumbv7em-none-eabihf
+          - rustup target add riscv32imc-unknown-none-elf
 
       install-c2rust:
         build: false
@@ -512,7 +522,7 @@ builders:
       BOARD: rpi-pico-w
 
   - name: ai-c3
-    parent: esp
+    parent: esp32c3
 
 apps:
   # define a dummy host application so the host tasks work

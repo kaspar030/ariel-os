@@ -1,4 +1,4 @@
-#[entry]
+#[esp_hal::entry]
 fn main() -> ! {
     super::startup();
 }
