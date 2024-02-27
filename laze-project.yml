@@ -448,6 +448,7 @@ builders:
           - rustup target add thumbv7em-none-eabi
           - rustup target add thumbv7em-none-eabihf
           - rustup target add riscv32imc-unknown-none-elf
+          - rustup component add rust-src
 
       install-c2rust:
         build: false
