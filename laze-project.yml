@@ -159,6 +159,7 @@ contexts:
         - -Clink-arg=-Tlink.x
         - -Clink-arg=-Tdevice.x
         - -Clink-arg=-Tisr_stack.x
+        - -Clink-arg=-Tlinkme.x
         - --cfg context=\"cortex-m\"
 
   - name: thumbv6m-none-eabi
@@ -175,7 +176,6 @@ contexts:
       RUSTC_TARGET: thumbv7em-none-eabi
       CARGO_TARGET_PREFIX: CARGO_TARGET_THUMBV7EM_NONE_EABI
       RUSTFLAGS:
-        - -Clink-arg=-Tlinkme.x
         - -Ctarget-cpu=cortex-m4
         - --cfg armv7m
 
