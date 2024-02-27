@@ -60,19 +60,15 @@ pub(crate) fn init() {
     let p = arch::init(Default::default());
 
     #[cfg(any(context = "nrf52", context = "rp2040"))]
-    {
-        EXECUTOR.start(arch::SWI);
-        EXECUTOR.spawner().spawn(init_task(p.into())).unwrap();
-    }
+    let p = crate::arch::OptionalPeripherals::from(p);
+
+    #[cfg(any(context = "nrf52", context = "rp2040"))]
+    EXECUTOR.start(arch::SWI);
 
     #[cfg(context = "esp")]
-    {
-        riot_rs_rt::debug::println!("riot-rs-embassy::init() starting executor");
-        EXECUTOR
-            .start(arch::interrupt::Priority::Priority1)
-            .spawn(init_task(p))
-            .unwrap();
-    }
+    EXECUTOR.start(arch::interrupt::Priority::Priority1);
+
+    EXECUTOR.spawner().must_spawn(init_task(p));
 
     riot_rs_rt::debug::println!("riot-rs-embassy::init() done");
 }
