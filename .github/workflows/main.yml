@@ -46,7 +46,7 @@ jobs:
       if: steps.result-cache.outputs.cache-hit != 'true'
       uses: dtolnay/rust-toolchain@nightly
       with:
-        targets: thumbv6m-none-eabi,thumbv7m-none-eabi,thumbv7em-none-eabi
+        targets: riscv32imc-unknown-none-elf,thumbv6m-none-eabi,thumbv7m-none-eabi,thumbv7em-none-eabi
 
     - name: rust cache
       if: steps.result-cache.outputs.cache-hit != 'true'
@@ -74,7 +74,9 @@ jobs:
       run: |
         sccache --start-server || true # work around https://github.com/ninja-build/ninja/issues/2052
 
-        laze build --partition hash:${{ matrix.partition }} --builders microbit-v2,nrf52840dk,rpi-pico,rpi-pico-w -g
+        laze build --global \
+          --partition hash:${{ matrix.partition }} \
+          --builders ai-c3,microbit-v2,nrf52840dk,rpi-pico,rpi-pico-w
 
   lint:
     runs-on: ubuntu-latest
