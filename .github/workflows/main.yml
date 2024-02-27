@@ -47,6 +47,7 @@ jobs:
       uses: dtolnay/rust-toolchain@nightly
       with:
         targets: riscv32imc-unknown-none-elf,thumbv6m-none-eabi,thumbv7m-none-eabi,thumbv7em-none-eabi
+        components: rust-src
 
     - name: rust cache
       if: steps.result-cache.outputs.cache-hit != 'true'
