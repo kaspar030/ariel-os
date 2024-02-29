@@ -1,4 +1,4 @@
-use esp32c3_hal::{
+use esp_hal::{
     clock::ClockControl,
     embassy::{
         self,
@@ -7,8 +7,8 @@ use esp32c3_hal::{
     prelude::*,
 };
 
-pub(crate) use esp32c3_hal::interrupt::{self};
-pub use esp32c3_hal::peripherals::{OptionalPeripherals, Peripherals};
+pub(crate) use esp_hal::interrupt::{self};
+pub use esp_hal::peripherals::{OptionalPeripherals, Peripherals};
 
 pub(crate) type Executor = InterruptExecutor<FromCpu1>;
 pub static SWI: () = ();
@@ -28,7 +28,7 @@ pub fn init(_config: Config) -> OptionalPeripherals {
 
     embassy::init(
         &clocks,
-        esp32c3_hal::systimer::SystemTimer::new(peripherals.SYSTIMER.take().unwrap()),
+        esp_hal::systimer::SystemTimer::new(peripherals.SYSTIMER.take().unwrap()),
     );
 
     peripherals

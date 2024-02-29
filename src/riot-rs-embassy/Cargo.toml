@@ -59,7 +59,10 @@ embassy-rp = { workspace = true, features = [
 ] }
 
 [target.'cfg(context = "esp")'.dependencies]
-esp32c3-hal = { workspace = true, features = [ "embassy", "embassy-executor-interrupt", "embassy-time-systick" ] }
+esp-hal = { workspace = true, features = [ "embassy", "embassy-executor-interrupt", "embassy-time-systick" ] }
+
+[target.'cfg(context = "esp32c3")'.dependencies]
+esp-hal = { workspace = true, features = [ "esp32c3", "rt", "vectored", "embassy-time-systick" ] }
 
 [features]
 time = ["dep:embassy-time", "embassy-executor/integrated-timers"]

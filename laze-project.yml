@@ -282,6 +282,8 @@ contexts:
   - name: esp32c3
     parent: esp
     env:
+      RUSTFLAGS:
+        - --cfg context=\"esp32c3\"
       RUSTC_TARGET: riscv32imc-unknown-none-elf
       CARGO_TARGET_PREFIX: CARGO_TARGET_RISCV32IMC_UNKNOWN_NONE_ELF
 
