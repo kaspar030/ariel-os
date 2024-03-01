@@ -7,25 +7,18 @@ use embassy_rp::{
     pio::Pio,
 };
 
-use riot_rs_utils::str_from_env_or;
-
 use self::rpi_pico_w::{Cyw43Periphs, CywSpi, Irqs, CYW43_PWR};
 use crate::{arch::OptionalPeripherals, make_static};
-
-const WIFI_NETWORK: &str = str_from_env_or!(
-    "CONFIG_WIFI_NETWORK",
-    "test_network",
-    "Wi-Fi SSID (network name)"
-);
-const WIFI_PASSWORD: &str =
-    str_from_env_or!("CONFIG_WIFI_PASSWORD", "test_password", "Wi-Fi password");
 
 pub type NetworkDevice = cyw43::NetDriver<'static>;
 
 pub async fn join(mut control: cyw43::Control<'static>) {
     loop {
         //control.join_open(WIFI_NETWORK).await;
-        match control.join_wpa2(WIFI_NETWORK, WIFI_PASSWORD).await {
+        match control
+            .join_wpa2(super::WIFI_NETWORK, super::WIFI_PASSWORD)
+            .await
+        {
             Ok(_) => break,
             Err(err) => {
                 riot_rs_rt::debug::println!("join failed with status={}", err.status);
