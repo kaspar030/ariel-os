@@ -19,7 +19,8 @@ portable-atomic = { version = "1.6.0", features = ["critical-section"] }
 
 [target.'cfg(context = "esp")'.dependencies]
 esp-hal = { workspace = true, default-features = false }
-esp-println = { workspace = true, features = ["esp32c3"] }
+esp-println = { workspace = true, features = ["esp32c3", "log"] }
+log = { version = "0.4.20"}
 portable-atomic = { version = "1.6.0", default-features = false, features = ["require-cas"] }
 
 [features]

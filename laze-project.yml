@@ -273,6 +273,7 @@ contexts:
         - -Clink-arg=-Tlinkall.x
         - -Clink-arg=-Tlinkme-esp-fixup.x
         - -Clink-arg=-Tlinkme.x
+        - -Clink-arg=-Trom_functions.x
         # this is needed for backtraces
           #- -C force-frame-pointers
       CARGO_ARGS:
@@ -431,6 +432,15 @@ modules:
       - rpi-pico
       - rpi-pico-w
 
+  - name: esp-wifi
+    context:
+      - esp
+    provides_unique:
+      - network_device
+    env:
+      global:
+        FEATURES:
+          - riot-rs/esp-wifi
 builders:
   # host builder (for housekeeping tasks)
   - name: host

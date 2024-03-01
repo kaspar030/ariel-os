@@ -21,7 +21,7 @@ pub mod usb;
 #[cfg(feature = "net")]
 pub mod network;
 
-#[cfg(feature = "wifi_cyw43")]
+#[cfg(any(feature = "wifi_cyw43", feature = "esp-wifi"))]
 mod wifi;
 
 #[cfg(feature = "net")]
@@ -38,6 +38,9 @@ use usb::ethernet::NetworkDevice;
 
 #[cfg(feature = "wifi_cyw43")]
 use wifi::cyw43::NetworkDevice;
+
+#[cfg(feature = "esp-wifi")]
+use wifi::esp_wifi::NetworkDevice;
 
 #[cfg(feature = "net")]
 pub use network::NetworkStack;
@@ -161,6 +164,9 @@ async fn init_task(mut peripherals: arch::OptionalPeripherals) {
         let (net_device, control) = wifi::cyw43::device(&mut peripherals, &spawner).await;
         (net_device, control)
     };
+
+    #[cfg(feature = "esp-wifi")]
+    let device = wifi::esp_wifi::init(&mut peripherals, spawner);
 
     #[cfg(feature = "net")]
     {
