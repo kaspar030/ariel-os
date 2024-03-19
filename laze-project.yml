@@ -398,6 +398,15 @@ modules:
         # note: this overrides CFLAGS_OPT in riot-rs context
         CFLAGS_OPT: -Oz
 
+  - name: codegen-cranelift
+    help: use the cranelift backend for code generation
+    env:
+      global:
+        CARGO_ARGS:
+          - -Zcodegen-backend
+        CARGO_ENV:
+          - CARGO_PROFILE_RELEASE_CODEGEN_BACKEND=cranelift
+
   - name: thread_info
     # enable thread names & stack info
     context: riot-rs
@@ -507,6 +516,7 @@ builders:
           - rustup target add riscv32imc-unknown-none-elf
           - rustup target add riscv32imac-unknown-none-elf
           - rustup component add rust-src
+          - rustup component add rustc-codegen-cranelift-preview
 
       install-c2rust:
         build: false
