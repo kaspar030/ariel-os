@@ -1546,6 +1546,7 @@ dependencies = [
  "serde",
  "strum 0.26.2",
  "void",
+ "xtensa-lx",
  "xtensa-lx-rt",
 ]
 
@@ -1666,6 +1667,14 @@ dependencies = [
 
 [[package]]
 name = "expressif-esp32-c6-devkitc-1"
+version = "0.1.0"
+dependencies = [
+ "riot-rs-debug",
+ "riot-rs-rt",
+]
+
+[[package]]
+name = "expressif-esp32-wroom-32"
 version = "0.1.0"
 dependencies = [
  "riot-rs-debug",
@@ -3182,6 +3191,7 @@ dependencies = [
  "cfg-if",
  "dwm1001",
  "expressif-esp32-c6-devkitc-1",
+ "expressif-esp32-wroom-32",
  "linkme",
  "microbit",
  "microbit-v2",

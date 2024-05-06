@@ -9,8 +9,8 @@ contexts:
     parent: default
     env:
       RUSTFLAGS:
-        - "-Clink-arg=--nmagic"
-        - "-Clink-arg=${LINK_ARG_PREFIX}--no-eh-frame-hdr"
+        #        - "-Clink-arg=--nmagic"
+        #        - "-Clink-arg=${LINK_ARG_PREFIX}--no-eh-frame-hdr"
         - --cfg builder=\"${builder}\"
         - --cfg context=\"${builder}\"
         - --cfg context=\"riot-rs\"
@@ -53,7 +53,7 @@ contexts:
         pool: console
         always: true
         cmd: >-
-          cd ${relpath} && ${CARGO_ENV} cargo ${CARGO_ARGS} build --${PROFILE} ${FEATURES}
+          cd ${relpath} && ${CARGO_ENV} cargo ${CARGO_TOOLCHAIN} ${CARGO_ARGS} build --${PROFILE} ${FEATURES}
           && cp ${relroot}/${build-dir}/bin/${builder}/${app}/cargo/${RUSTC_TARGET}/${PROFILE}/${riot_binary} ${relroot}/${out}
 
       - name: GIT_DOWNLOAD
@@ -67,13 +67,13 @@ contexts:
 
       cargo:
         cmd:
-          - cd ${relpath} && ${CARGO_ENV} cargo ${CARGO_ARGS}
+          - cd ${relpath} && ${CARGO_ENV} cargo ${CARGO_TOOLCHAIN} ${CARGO_ARGS}
         build: false
 
       run:
         build: false
         cmd:
-          - cd ${appdir} && ${CARGO_ENV} cargo ${CARGO_ARGS} run --${PROFILE} ${FEATURES}
+          - cd ${appdir} && ${CARGO_ENV} cargo ${CARGO_TOOLCHAIN} ${CARGO_ARGS} run --${PROFILE} ${FEATURES}
 
       cargo-test:
         cmd:
@@ -82,7 +82,7 @@ contexts:
 
       debug:
         cmd:
-          - cd examples/${app} && ${CARGO_ENV} cargo ${CARGO_ARGS} run --${PROFILE} ${FEATURES}
+          - cd examples/${app} && ${CARGO_ENV} cargo ${CARGO_TOOLCHAIN} ${CARGO_ARGS} run --${PROFILE} ${FEATURES}
         build: false
         ignore_ctrl_c: true
 
@@ -94,12 +94,12 @@ contexts:
 
       bloat:
         cmd:
-          - cd examples/${app} && ${CARGO_ENV} cargo ${CARGO_ARGS} bloat --${PROFILE} ${FEATURES}
+          - cd examples/${app} && ${CARGO_ENV} cargo ${CARGO_TOOLCHAIN} ${CARGO_ARGS} bloat --${PROFILE} ${FEATURES}
         build: false
 
       tree:
         cmd:
-          - cd examples/${app} && ${CARGO_ENV} cargo ${CARGO_ARGS} tree ${FEATURES}
+          - cd examples/${app} && ${CARGO_ENV} cargo ${CARGO_TOOLCHAIN} ${CARGO_ARGS} tree ${FEATURES}
         build: false
 
       flash:
@@ -275,6 +275,15 @@ contexts:
       CARGO_ARGS:
         - -Zbuild-std=core
       CARGO_RUNNER: '"espflash flash --monitor"'
+
+  - name: esp32
+    parent: esp
+    env:
+      CARGO_TOOLCHAIN: +esp
+      RUSTFLAGS:
+        - --cfg context=\"esp32\"
+      RUSTC_TARGET: xtensa-esp32-none-elf
+      CARGO_TARGET_PREFIX: CARGO_TARGET_XTENSA_ESP32_NONE_ELF
 
   - name: esp32c3
     parent: esp
@@ -649,6 +658,9 @@ builders:
 
   - name: nrf5340dk
     parent: nrf5340
+
+  - name: expressif-esp32-wroom-32
+    parent: esp32
 
 apps:
   # define a dummy host application so the host tasks work

@@ -7,4 +7,4 @@ SECTIONS {
   linkm2_THREAD_FNS : { *(linkm2_THREAD_FNS) } > FLASH
 }
 
-INSERT AFTER .rodata
+INSERT AFTER .rodatax

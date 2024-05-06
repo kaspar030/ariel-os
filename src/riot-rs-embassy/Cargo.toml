@@ -82,6 +82,10 @@ esp-wifi = { workspace = true, features = [
   "wifi",
 ], optional = true }
 
+[target.'cfg(context = "esp32")'.dependencies]
+esp-hal = { workspace = true, features = ["esp32"] }
+esp-wifi = { workspace = true, features = ["esp32"], optional = true }
+
 [target.'cfg(context = "esp32c3")'.dependencies]
 esp-hal = { workspace = true, features = ["esp32c3"] }
 esp-wifi = { workspace = true, features = ["esp32c3"], optional = true }
