@@ -17,6 +17,8 @@ contexts:
       FEATURES:
         - riot-rs-boards/${BOARD}
       SCRIPTS: ${relroot}/scripts
+      CARGO_ARGS:
+        - --config ${relroot}/crates-io-patches.toml
       # laze doesn't know the concept of "export" as make does, so each variable
       # that needs to be passed via environment needs to be listed in that rule
       # or task's command list.
