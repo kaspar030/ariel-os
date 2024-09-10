@@ -3662,6 +3662,7 @@ dependencies = [
  "cfg-if",
  "cortex-m",
  "defmt",
+ "esp-hal",
 ]
 
 [[package]]
