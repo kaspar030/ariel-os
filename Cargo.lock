@@ -1127,7 +1127,7 @@ dependencies = [
 [[package]]
 name = "embassy-executor"
 version = "0.6.0"
-source = "git+https://github.com/kaspar030/embassy?branch=for-riot-rs-2024-08-18-wakers#c17dc6cc90d6b9e8c18c8b0ea58c1a4dd868b6f1"
+source = "git+https://github.com/kaspar030/embassy?branch=for-riot-rs-2024-08-18#164b3a99efbeccc442971b63dc1b90f03db637ea"
 dependencies = [
  "cortex-m",
  "critical-section",
@@ -2018,6 +2018,14 @@ dependencies = [
 
 [[package]]
 name = "espressif-esp32-s3-wroom-1"
+version = "0.1.0"
+dependencies = [
+ "riot-rs-debug",
+ "riot-rs-rt",
+]
+
+[[package]]
+name = "espressif-esp32-wroom-32"
 version = "0.1.0"
 dependencies = [
  "riot-rs-debug",
@@ -3674,6 +3682,7 @@ dependencies = [
  "dwm1001",
  "espressif-esp32-c6-devkitc-1",
  "espressif-esp32-s3-wroom-1",
+ "espressif-esp32-wroom-32",
  "linkme",
  "microbit",
  "microbit-v2",
@@ -3723,6 +3732,9 @@ dependencies = [
  "embassy-usb",
  "embedded-hal 1.0.0",
  "embedded-hal-async",
+ "esp-hal",
+ "esp-hal-embassy",
+ "esp-wifi",
  "heapless 0.8.0",
  "linkme",
  "once_cell",
