@@ -12,7 +12,7 @@ contexts:
     selects:
       - executor-default
       - ?critical-section
-      - ?defmt
+      - ?debug-console
       - ?lto
       - ?semihosting
     env:
@@ -228,7 +228,6 @@ contexts:
   - name: esp
     parent: ariel-os
     selects:
-      - ?debug-console
       - ?esp-println
     env:
       RUSTFLAGS:
@@ -423,6 +422,9 @@ modules:
 
   - name: debug-console
     context: ariel-os
+    selects:
+      - ?defmt
+      - ?debug-log
     env:
       global:
         FEATURES:
@@ -431,18 +433,33 @@ modules:
   - name: defmt
     help: Enable use of defmt
     context: ariel-os
+    selects:
+      - debug-console
     env:
       global:
         FEATURES:
           - ariel-os/defmt
         RUSTFLAGS:
           - -Clink-arg=-Tdefmt.x
+          - --cfg defmt
         ESPFLASH_LOG_FORMAT: '--log-format defmt'
         CARGO_ENV:
           # For some reason, `sccache` makes the build not realize changes to
           # `DEFMT_LOG`. Painful as it is, hard-disable `sccache` here.
           - RUSTC_WRAPPER=""
           - DEFMT_LOG=info,${LOG}
+
+  - name: debug-log
+    help: Enable non-defmt debug logger
+    context: ariel-os
+    selects:
+      - debug-console
+    conflicts:
+      - defmt
+    env:
+      global:
+        FEATURES:
+          - ariel-os/debug-log
 
   - name: silent-panic
     context: ariel-os
