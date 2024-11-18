@@ -1,0 +1,13 @@
+apps:
+  - name: ulanzi
+    context:
+      - espressif-esp32-devkitc
+    # env:
+    #   global:
+    #     RUSTFLAGS:
+    #     - --cfg place_rmt_driver_in_ram
+    selects:
+      #      - sw/threading
+      #- network
+      - random
+      - ?release

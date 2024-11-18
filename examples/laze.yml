@@ -35,5 +35,6 @@ subdirs:
   - threading-multicore
   - threading-timers
   - udp-echo
+  - ulanzi
   - usb-keyboard
   - usb-serial

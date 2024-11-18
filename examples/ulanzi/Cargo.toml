@@ -1,0 +1,28 @@
+[package]
+name = "ulanzi"
+version = "0.1.0"
+license.workspace = true
+edition.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+ariel-os = { path = "../../src/ariel-os", features = ["time", "random"] }
+ariel-os-boards = { path = "../../src/ariel-os-boards" }
+embassy-time = { workspace = true }
+embassy-sync = { workspace = true }
+smart-leds = "0.4.0"
+smart-leds-trait = "0.3.1"
+esp-hal.workspace = true
+#esp-hal-smartled = { version = "0.17.0", features = ["esp32", "defmt"] }
+esp-hal-smartled = { git = "https://github.com/kaspar030/esp-hal-community", branch = "fix-smartled-with-esp_hal-1.0.0", features = [
+  "esp32",
+  "defmt",
+] }
+embassy-executor = { workspace = true, default-features = false }
+embedded-graphics-core = "0.4.0"
+embedded-graphics = "0.8.1"
+rand_core.workspace = true
+cfg-if.workspace = true
