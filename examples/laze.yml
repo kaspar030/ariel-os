@@ -26,5 +26,6 @@ subdirs:
   - threading-event
   - threading-multicore
   - udp-echo
+  - ulanzi
   - usb-keyboard
   - usb-serial
