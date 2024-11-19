@@ -27,7 +27,7 @@
 
 use core::marker::PhantomData;
 
-use rand_core::{RngCore, SeedableRng};
+pub use rand_core::{RngCore, SeedableRng};
 
 /// A global RNG.
 // The Mutex<RefCell> can probably be simplified
