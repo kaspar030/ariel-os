@@ -8,9 +8,9 @@ use riot_rs::debug::{exit, log, log::*};
 
 use embassy_sync::blocking_mutex::{raw::CriticalSectionRawMutex, Mutex};
 use embassy_sync::signal::Signal;
-use embassy_time::{Duration, Timer};
 use riot_rs::arch::peripherals;
 use riot_rs::gpio::{Level, Output};
+use riot_rs::time::{Duration, Timer};
 
 riot_rs::define_peripherals!(UlanziPeripherals {
     buzzer: GPIO_15,
@@ -67,7 +67,7 @@ mod thread_timer {
     }
 
     pub fn after(duration: Duration) {
-        use riot_rs::blocker;
+        use riot_rs::asynch::blocker;
         TIMER_SIGNAL.reset();
         blocker::block_on(TIMER_CHANNEL.send(duration));
         blocker::block_on(TIMER_SIGNAL.wait());
@@ -153,75 +153,79 @@ mod drawer {
     }
 }
 
-#[riot_rs::thread(autostart, priority = 9)]
-fn main() {
-    info!("Hello World from thread!");
-
-    use embedded_graphics::{
-        mono_font::{ascii::FONT_5X8, MonoTextStyle},
-        pixelcolor::Rgb888,
-        prelude::*,
-        primitives::{
-            Circle, CornerRadii, Ellipse, PrimitiveStyle, PrimitiveStyleBuilder, Rectangle,
-            RoundedRectangle, Triangle,
-        },
-        text::Text,
-    };
-
-    let mut display = drawer::MyDrawTarget::new();
-    let mut count = 0;
-    let stroke = PrimitiveStyle::with_stroke(Rgb888::MAGENTA, 1);
-    let black = PrimitiveStyle::with_stroke(Rgb888::BLACK, 1);
-
-    //let stroke_off_fill_off = PrimitiveStyleBuilder::new()
-    //    .stroke_color(Rgb888::RED)
-    //    .stroke_width(1)
-    //    .fill_color(Rgb888::GREEN)
-    //    .build();
-    //
-    let fill_black = PrimitiveStyle::with_fill(Rgb888::BLACK);
-
-    //Pixel(Point::new(31, 3), Rgb888::MAGENTA)
-    //    .draw(&mut display)
-    //    .unwrap();
-    //display.flush();
-
-    let style = MonoTextStyle::new(&FONT_5X8, Rgb888::YELLOW);
-
-    let text = "Hello from RIOT-rs!";
-
-    loop {
-        for count in 0i32..(text.len() as i32 * 5 + 32) {
-            display.clear(Rgb888::BLACK).unwrap();
-            display.flush();
-
-            Text::new(text, Point::new(32 - (count), 6), style)
-                .draw(&mut display)
-                .unwrap();
-
-            Rectangle::new(Point::new(0, 0), Size::new(32, 8))
-                .into_styled(stroke)
-                .draw(&mut display)
-                .unwrap();
-
-            display.flush();
-
-            thread_timer::after(Duration::from_millis(128));
-        }
-    }
-
-    //for y in 0..=7 {
-    //    for x in 0..=31 {
-    //        Pixel(Point::new(x, y), Rgb888::MAGENTA)
-    //            .draw(&mut display)
-    //            .unwrap();
-    //        display.flush();
-    //        thread_timer::after(Duration::from_millis(32));
-    //        Pixel(Point::new(x, y), Rgb888::BLACK)
-    //            .draw(&mut display)
-    //            .unwrap();
-    //        display.flush();
-    //        thread_timer::after(Duration::from_millis(32));
-    //    }
-    //}
-}
+//#[riot_rs::thread(autostart, priority = 9)]
+//fn main() {
+//    info!("Hello World from thread!");
+//
+//    use embedded_graphics::{
+//        mono_font::{ascii::FONT_5X8, MonoTextStyle},
+//        pixelcolor::Rgb888,
+//        prelude::*,
+//        primitives::{
+//            Circle, CornerRadii, Ellipse, PrimitiveStyle, PrimitiveStyleBuilder, Rectangle,
+//            RoundedRectangle, Triangle,
+//        },
+//        text::Text,
+//    };
+//
+//    let mut display = drawer::MyDrawTarget::new();
+//    let mut count = 0;
+//    let stroke = PrimitiveStyle::with_stroke(Rgb888::MAGENTA, 1);
+//    let black = PrimitiveStyle::with_stroke(Rgb888::BLACK, 1);
+//
+//    //let stroke_off_fill_off = PrimitiveStyleBuilder::new()
+//    //    .stroke_color(Rgb888::RED)
+//    //    .stroke_width(1)
+//    //    .fill_color(Rgb888::GREEN)
+//    //    .build();
+//    //
+//    let fill_black = PrimitiveStyle::with_fill(Rgb888::BLACK);
+//
+//    //Pixel(Point::new(31, 3), Rgb888::MAGENTA)
+//    //    .draw(&mut display)
+//    //    .unwrap();
+//    //display.flush();
+//
+//    let style = MonoTextStyle::new(&FONT_5X8, Rgb888::YELLOW);
+//
+//    let text = "ARIEL OS";
+//
+//    loop {
+//        for count in 0i32..(text.len() as i32 * 5 + 32) {
+//            display.clear(Rgb888::BLACK).unwrap();
+//            display.flush();
+//
+//            Text::new(text, Point::new(32 - (count), 6), style)
+//                .draw(&mut display)
+//                .unwrap();
+//
+//            Rectangle::new(Point::new(0, 0), Size::new(32, 8))
+//                .into_styled(stroke)
+//                .draw(&mut display)
+//                .unwrap();
+//
+//            display.flush();
+//
+//            thread_timer::after(Duration::from_millis(128));
+//        }
+//    }
+//
+//    //loop {
+//    //    for x in 0..=31 {
+//    //        for y in 0..=7 {
+//    //            Pixel(Point::new(x, y), Rgb888::MAGENTA)
+//    //                .draw(&mut display)
+//    //                .unwrap();
+//    //            display.flush();
+//    //            thread_timer::after(Duration::from_millis(100));
+//    //            Pixel(Point::new(x, y), Rgb888::BLACK)
+//    //                .draw(&mut display)
+//    //                .unwrap();
+//    //            display.flush();
+//    //            thread_timer::after(Duration::from_millis(100));
+//    //        }
+//    //    }
+//    //}
+//}
+//
+mod lavalamp;
