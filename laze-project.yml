@@ -255,6 +255,8 @@ contexts:
       RUSTFLAGS:
         - --cfg context=\"esp32\"
       RUSTC_TARGET: xtensa-esp32-none-elf
+      PROBE_RS_CHIP: esp32
+      PROBE_RS_PROTOCOL: jtag
       CARGO_TARGET_PREFIX: CARGO_TARGET_XTENSA_ESP32_NONE_ELF
 
   - name: esp-wroom-32
