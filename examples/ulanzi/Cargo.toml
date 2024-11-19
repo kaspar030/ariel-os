@@ -10,16 +10,13 @@ publish = false
 workspace = true
 
 [dependencies]
-riot-rs = { path = "../../src/riot-rs", features = [ "time"] }
+riot-rs = { path = "../../src/riot-rs", features = [ "time", "random" ] }
 riot-rs-boards = { path = "../../src/riot-rs-boards" }
 embassy-time = { workspace = true }
 embassy-sync = { workspace = true }
-# LED strip driver, this time without even needing SPI
 smart-leds = "0.4.0"
 esp-hal.workspace = true
 esp-hal-smartled = {git = "https://github.com/esp-rs/esp-hal-community", rev = "3562306e171dab0afae9cc28f8eb02f22e93a593", features = ["esp32", "defmt"]}
-
 embassy-executor = { workspace = true, default-features = false }
 embedded-graphics-core = "0.4.0"
 embedded-graphics = "0.8.1"
-
