@@ -10,8 +10,8 @@ publish = false
 workspace = true
 
 [dependencies]
-riot-rs = { path = "../../src/riot-rs", features = [ "time", "random" ] }
-riot-rs-boards = { path = "../../src/riot-rs-boards" }
+ariel-os = { path = "../../src/ariel-os", features = [ "time", "random" ] }
+ariel-os-boards = { path = "../../src/ariel-os-boards" }
 embassy-time = { workspace = true }
 embassy-sync = { workspace = true }
 smart-leds = "0.4.0"

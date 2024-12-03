@@ -1,19 +1,20 @@
+use ariel_os::debug::{log::info, println};
+use ariel_os::random::RngCore;
+use ariel_os::time::{Duration, Instant};
 use embassy_time::Ticker;
-use riot_rs::debug::{log::info, println};
-use riot_rs::random::RngCore;
-use riot_rs::time::{Duration, Instant};
 use smart_leds::{
     colors, gamma,
     hsv::{hsv2rgb, Hsv},
     RGB8,
 };
 
-#[riot_rs::task(autostart)]
+#[ariel_os::task(autostart)]
 async fn lavalamp() {
+    println!("lavalamp task started");
     const NODE: Node = Node::new();
     let mut nodes = [NODE; 256];
     let mut storage = [colors::BLACK; 256];
-    let mut rng = riot_rs::random::fast_rng();
+    let mut rng = ariel_os::random::fast_rng();
 
     let mut hue: u8 = rng.next_u32() as u8;
     let mut sat: u8 = rng.next_u32() as u8;
@@ -29,6 +30,8 @@ async fn lavalamp() {
 
     // Go forever
     loop {
+        println!("lavalamp loop");
+        info!("{}:{}", file!(), line!());
         // Report FPS periodically
         if fps_tick.elapsed() >= Duration::from_secs(5) {
             println!("FPS: {:.02}", ticks as f64 / 5.0);
@@ -61,11 +64,16 @@ async fn lavalamp() {
             *s = n.step(&mut rng, hue, sat);
         });
 
+        info!("{}:{}", file!(), line!());
         // This is our rate-limiter (60fps)
         last_draw.next().await;
+        info!("{}:{}", file!(), line!());
 
+        info!("{}:{}", file!(), line!());
         crate::PIXELS.lock(|out| out.set(storage));
+        info!("{}:{}", file!(), line!());
         crate::SIGNAL.signal(());
+        info!("{}:{}", file!(), line!());
 
         ticks += 1;
     }

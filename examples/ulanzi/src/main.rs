@@ -3,16 +3,16 @@
 #![feature(impl_trait_in_assoc_type)]
 #![feature(used_with_arg)]
 
+use ariel_os::debug::{exit, log, log::*};
 use core::cell::Cell;
-use riot_rs::debug::{exit, log, log::*};
 
+use ariel_os::gpio::{Level, Output};
+use ariel_os::hal::peripherals;
+use ariel_os::time::{Duration, Timer};
 use embassy_sync::blocking_mutex::{raw::CriticalSectionRawMutex, Mutex};
 use embassy_sync::signal::Signal;
-use riot_rs::arch::peripherals;
-use riot_rs::gpio::{Level, Output};
-use riot_rs::time::{Duration, Timer};
 
-riot_rs::define_peripherals!(UlanziPeripherals {
+ariel_os::define_peripherals!(UlanziPeripherals {
     buzzer: GPIO_15,
     matrix: GPIO_32,
     rmt: RMT,
@@ -24,7 +24,7 @@ static SIGNAL: Signal<CriticalSectionRawMutex, ()> = Signal::new();
 static PIXELS: Mutex<CriticalSectionRawMutex, Cell<[RGB8; N_LEDS]>> =
     Mutex::new(Cell::new([RGB8::new(0, 0, 0); N_LEDS]));
 
-#[riot_rs::task(autostart, peripherals)]
+#[ariel_os::task(autostart, peripherals)]
 async fn matrix_refresh(peripherals: UlanziPeripherals) {
     info!("Hello World!");
     let mut buzzer = Output::new(peripherals.buzzer, Level::Low);
@@ -40,11 +40,15 @@ async fn matrix_refresh(peripherals: UlanziPeripherals) {
     let mut led = SmartLedAdapterAsync::new(rmt.channel0, peripherals.matrix, rmt_buffer);
 
     loop {
+        info!("waiting");
         let pixels = PIXELS.lock(|pixels| pixels.get());
+        info!("{}:{}", file!(), line!());
         if let Err(e) = led.write(pixels).await {
             log::error!("Driving LED: {:?}", e);
         }
+        info!("{}:{}", file!(), line!());
         SIGNAL.wait().await;
+        info!("{}:{}", file!(), line!());
     }
 }
 
@@ -57,7 +61,7 @@ mod thread_timer {
     static TIMER_SIGNAL: Signal<CriticalSectionRawMutex, ()> = Signal::new();
     static TIMER_CHANNEL: Channel<CriticalSectionRawMutex, Duration, 1> = Channel::new();
 
-    #[riot_rs::task(autostart)]
+    #[ariel_os::task(autostart)]
     async fn thread_timer_task() {
         loop {
             let duration = TIMER_CHANNEL.receive().await;
@@ -67,7 +71,7 @@ mod thread_timer {
     }
 
     pub fn after(duration: Duration) {
-        use riot_rs::asynch::blocker;
+        use ariel_os::asynch::blocker;
         TIMER_SIGNAL.reset();
         blocker::block_on(TIMER_CHANNEL.send(duration));
         blocker::block_on(TIMER_SIGNAL.wait());
@@ -153,7 +157,7 @@ mod drawer {
     }
 }
 
-//#[riot_rs::thread(autostart, priority = 9)]
+//#[ariel_os::thread(autostart, priority = 9)]
 //fn main() {
 //    info!("Hello World from thread!");
 //
