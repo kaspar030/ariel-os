@@ -40,44 +40,40 @@ async fn matrix_refresh(peripherals: UlanziPeripherals) {
     let mut led = SmartLedAdapterAsync::new(rmt.channel0, peripherals.matrix, rmt_buffer);
 
     loop {
-        info!("waiting");
         let pixels = PIXELS.lock(|pixels| pixels.get());
-        info!("{}:{}", file!(), line!());
         if let Err(e) = led.write(pixels).await {
             log::error!("Driving LED: {:?}", e);
         }
-        info!("{}:{}", file!(), line!());
         SIGNAL.wait().await;
-        info!("{}:{}", file!(), line!());
     }
 }
 
-mod thread_timer {
-    use embassy_sync::{
-        blocking_mutex::raw::CriticalSectionRawMutex, channel::Channel, signal::Signal,
-    };
-    use embassy_time::{Duration, Timer};
-
-    static TIMER_SIGNAL: Signal<CriticalSectionRawMutex, ()> = Signal::new();
-    static TIMER_CHANNEL: Channel<CriticalSectionRawMutex, Duration, 1> = Channel::new();
-
-    #[ariel_os::task(autostart)]
-    async fn thread_timer_task() {
-        loop {
-            let duration = TIMER_CHANNEL.receive().await;
-            Timer::after(duration).await;
-            TIMER_SIGNAL.signal(());
-        }
-    }
-
-    pub fn after(duration: Duration) {
-        use ariel_os::asynch::blocker;
-        TIMER_SIGNAL.reset();
-        blocker::block_on(TIMER_CHANNEL.send(duration));
-        blocker::block_on(TIMER_SIGNAL.wait());
-    }
-}
-
+//mod thread_timer {
+//    use embassy_sync::{
+//        blocking_mutex::raw::CriticalSectionRawMutex, channel::Channel, signal::Signal,
+//    };
+//    use embassy_time::{Duration, Timer};
+//
+//    static TIMER_SIGNAL: Signal<CriticalSectionRawMutex, ()> = Signal::new();
+//    static TIMER_CHANNEL: Channel<CriticalSectionRawMutex, Duration, 1> = Channel::new();
+//
+//    #[ariel_os::task(autostart)]
+//    async fn thread_timer_task() {
+//        loop {
+//            let duration = TIMER_CHANNEL.receive().await;
+//            Timer::after(duration).await;
+//            TIMER_SIGNAL.signal(());
+//        }
+//    }
+//
+//    pub fn after(duration: Duration) {
+//        use ariel_os::asynch::blocker;
+//        TIMER_SIGNAL.reset();
+//        blocker::block_on(TIMER_CHANNEL.send(duration));
+//        blocker::block_on(TIMER_SIGNAL.wait());
+//    }
+//}
+//
 mod drawer {
     use embedded_graphics::{
         geometry::{OriginDimensions, Size},

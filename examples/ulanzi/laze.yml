@@ -3,6 +3,6 @@ apps:
     context:
       - espressif-esp32-wroom-32
     selects:
-      - sw/threading
+      #      - sw/threading
       - random
       - ?release

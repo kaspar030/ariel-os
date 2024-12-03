@@ -30,8 +30,6 @@ async fn lavalamp() {
 
     // Go forever
     loop {
-        println!("lavalamp loop");
-        info!("{}:{}", file!(), line!());
         // Report FPS periodically
         if fps_tick.elapsed() >= Duration::from_secs(5) {
             println!("FPS: {:.02}", ticks as f64 / 5.0);
@@ -64,16 +62,11 @@ async fn lavalamp() {
             *s = n.step(&mut rng, hue, sat);
         });
 
-        info!("{}:{}", file!(), line!());
         // This is our rate-limiter (60fps)
         last_draw.next().await;
-        info!("{}:{}", file!(), line!());
 
-        info!("{}:{}", file!(), line!());
         crate::PIXELS.lock(|out| out.set(storage));
-        info!("{}:{}", file!(), line!());
         crate::SIGNAL.signal(());
-        info!("{}:{}", file!(), line!());
 
         ticks += 1;
     }
