@@ -615,7 +615,7 @@ modules:
 
   - name: network
     selects:
-      - network_device
+      - network-device
 
   - name: sw/storage
     context:
@@ -643,7 +643,7 @@ modules:
     context:
       - rpi-pico-w
     provides_unique:
-      - network_device
+      - network-device
     env:
       global:
         FEATURES:
@@ -651,7 +651,7 @@ modules:
 
   - name: usb-ethernet
     provides_unique:
-      - network_device
+      - network-device
     selects:
       - usb
     conflicts:
@@ -736,7 +736,7 @@ modules:
     context:
       - esp
     provides_unique:
-      - network_device
+      - network-device
     env:
       global:
         RUSTFLAGS:
