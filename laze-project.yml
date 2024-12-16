@@ -616,6 +616,15 @@ modules:
   - name: network
     selects:
       - network-device
+      - network-config
+
+  - name: network-config-static
+    provides_unique:
+      - network-config
+
+  - name: network-config-dhcp
+    provides_unique:
+      - network-config
 
   - name: sw/storage
     context:
