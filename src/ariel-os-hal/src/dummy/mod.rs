@@ -13,6 +13,7 @@
     reason = "this dummy module mimics manufacturer-specific crates"
 )]
 
+#[cfg(not(context = "native"))]
 mod executor;
 
 #[doc(hidden)]
@@ -48,13 +49,18 @@ pub mod storage;
 #[cfg(feature = "usb")]
 pub mod usb;
 
+#[cfg(not(context = "native"))]
 pub use executor::{Executor, Spawner};
 pub use peripheral::{OptionalPeripherals, Peripheral};
 
 #[doc(hidden)]
 #[must_use]
 pub fn init() -> OptionalPeripherals {
-    unimplemented!();
+    if cfg!(context = "native") {
+        OptionalPeripherals {}
+    } else {
+        unimplemented!()
+    }
 }
 
 #[doc(hidden)]
