@@ -84,14 +84,12 @@ hwrng = ["dep:ariel-os-random"]
 i2c = [
   "dep:fugit",
   "ariel-os-embassy-common/i2c",
-  "embassy-executor/integrated-timers",
 ]
 
 ## Enables SPI support.
 spi = [
   "dep:fugit",
-  "ariel-os-embassy-common/spi",
-  "embassy-executor/integrated-timers",
+  "ariel-os-embassy-common/spi"
 ]
 
 ## Enables defmt support.
