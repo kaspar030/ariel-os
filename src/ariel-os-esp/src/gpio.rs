@@ -101,10 +101,10 @@ pub enum DriveStrength {
 impl From<DriveStrength> for esp_hal::gpio::DriveStrength {
     fn from(drive_strength: DriveStrength) -> Self {
         match drive_strength {
-            DriveStrength::_5mA => Self::I5mA,
-            DriveStrength::_10mA => Self::I10mA,
-            DriveStrength::_20mA => Self::I20mA,
-            DriveStrength::_40mA => Self::I40mA,
+            DriveStrength::_5mA => Self::_5mA,
+            DriveStrength::_10mA => Self::_10mA,
+            DriveStrength::_20mA => Self::_20mA,
+            DriveStrength::_40mA => Self::_40mA,
         }
     }
 }
