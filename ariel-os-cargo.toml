@@ -35,7 +35,7 @@ cyw43 = { git = "https://github.com/ariel-os/embassy", branch = "for-ariel-os-20
 cyw43-pio = { git = "https://github.com/ariel-os/embassy", branch = "for-ariel-os-2024-11-28" }
 
 # ariel-os esp-hal fork
-#esp-alloc = { git = "https://github.com/ariel-os/esp-hal", branch = "for-ariel-os-2024-11-21-0.22.0" }
+esp-alloc = { git = "https://github.com/ariel-os/esp-hal", branch = "for-ariel-os-timer-rework" }
 esp-hal = { git = "https://github.com/ariel-os/esp-hal", branch = "for-ariel-os-timer-rework" }
 esp-hal-embassy = { git = "https://github.com/ariel-os/esp-hal", branch = "for-ariel-os-timer-rework" }
 #esp-println = { git = "https://github.com/ariel-os/esp-hal", branch = "for-ariel-os-2024-11-21-0.22.0" }
