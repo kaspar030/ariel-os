@@ -6,7 +6,10 @@ use ariel_os_embassy_common::{
 };
 use embassy_embedded_hal::adapter::{BlockingAsync, YieldingAsync};
 use esp_hal::{
-    gpio::{self, interconnect::PeripheralOutput},
+    gpio::{
+        self,
+        interconnect::{PeripheralInput, PeripheralOutput},
+    },
     peripheral::Peripheral,
     peripherals,
     spi::master::Spi as InnerSpi,
@@ -75,7 +78,7 @@ macro_rules! define_spi_drivers {
                 #[must_use]
                 pub fn new(
                     sck_pin: impl Peripheral<P: PeripheralOutput> + 'static,
-                    miso_pin: impl Peripheral<P: PeripheralOutput> + 'static,
+                    miso_pin: impl Peripheral<P: PeripheralInput> + 'static,
                     mosi_pin: impl Peripheral<P: PeripheralOutput> + 'static,
                     config: Config,
                 ) -> Spi {
@@ -97,10 +100,11 @@ macro_rules! define_spi_drivers {
                     // peripheral multiple times.
                     let spi_peripheral = unsafe { peripherals::$peripheral::steal() };
 
-                    let spi = esp_hal::spi::master::Spi::new_with_config(
+                    let spi = esp_hal::spi::master::Spi::new(
                         spi_peripheral,
                         spi_config,
                     )
+                        .unwrap()
                         .with_sck(sck_pin)
                         .with_mosi(mosi_pin)
                         .with_miso(miso_pin)
