@@ -2,7 +2,9 @@
 
 use ariel_os_embassy_common::impl_async_i2c_for_driver_enum;
 use esp_hal::{
-    gpio::interconnect::PeripheralOutput, i2c::master::I2c as EspI2c, peripheral::Peripheral,
+    gpio::interconnect::PeripheralOutput,
+    i2c::master::{BusTimeout, I2c as EspI2c},
+    peripheral::Peripheral,
     peripherals, Async,
 };
 
@@ -96,8 +98,10 @@ macro_rules! define_i2c_drivers {
                 ) -> I2c {
                     let mut twim_config = esp_hal::i2c::master::Config::default();
                     twim_config.frequency = config.frequency.into();
+                    #[cfg(any(context = "esp32s3", context = "esp32c3", context = "esp32c6"))]
+                    let disabled_timeout = BusTimeout::Disabled;
                     // Disable timeout as we implement it at a higher level.
-                    twim_config.timeout = None;
+                    twim_config.timeout = disabled_timeout;
 
                     // Make this struct a compile-time-enforced singleton: having multiple statics
                     // defined with the same name would result in a compile-time error.
@@ -115,6 +119,7 @@ macro_rules! define_i2c_drivers {
                         i2c_peripheral,
                         twim_config,
                     )
+                        .unwrap()
                         .into_async()
                         .with_sda(sda_pin)
                         .with_scl(scl_pin);
@@ -142,18 +147,26 @@ macro_rules! define_i2c_drivers {
 
 // We cannot impl From because both types are external to this crate.
 fn from_error(err: esp_hal::i2c::master::Error) -> ariel_os_embassy_common::i2c::controller::Error {
-    use esp_hal::i2c::master::Error::*;
+    use esp_hal::i2c::master::{AcknowledgeCheckFailedReason, Error as EspError};
 
     use ariel_os_embassy_common::i2c::controller::{Error, NoAcknowledgeSource};
 
     match err {
-        ExceedingFifo => Error::Overrun,
-        AckCheckFailed => Error::NoAcknowledge(NoAcknowledgeSource::Unknown),
-        TimeOut => Error::Timeout,
-        ArbitrationLost => Error::ArbitrationLoss,
-        ExecIncomplete => Error::Other,
-        CommandNrExceeded => Error::Other,
-        InvalidZeroLength => Error::Other,
+        EspError::FifoExceeded => Error::Overrun,
+        EspError::AcknowledgeCheckFailed(reason) => {
+            let reason = match reason {
+                AcknowledgeCheckFailedReason::Address => NoAcknowledgeSource::Address,
+                AcknowledgeCheckFailedReason::Data => NoAcknowledgeSource::Data,
+                AcknowledgeCheckFailedReason::Unknown | _ => NoAcknowledgeSource::Unknown,
+            };
+            Error::NoAcknowledge(reason)
+        }
+        EspError::Timeout => Error::Timeout,
+        EspError::ArbitrationLost => Error::ArbitrationLoss,
+        EspError::ExecutionIncomplete => Error::Other,
+        EspError::CommandNumberExceeded => Error::Other,
+        EspError::ZeroLengthInvalid => Error::Other,
+        _ => Error::Other,
     }
 }
 
