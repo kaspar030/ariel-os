@@ -21,6 +21,7 @@ This directory contains example applications that showcase how to use Ariel OS.
 - [random/](./random): Demonstrates obtaining random values
 - [storage/](./storage): Demonstrates persistent storage interaction
 - [tcp-echo/](./tcp-echo): TCP echo example
+- [tcp-blinky/](./tcp-blinky): control LED via TCP example
 - [testing/](./testing): Demonstrates `embedded-test` integration
 - [thread-async-interop/](./thread-async-interop): How to make async tasks and preemptively scheduled threads interoperate
 - [threading/](./threading): How to start and use preemptively scheduled threads

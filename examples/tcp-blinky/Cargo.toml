@@ -1,0 +1,19 @@
+[package]
+name = "tcp-blinky"
+version = "0.1.0"
+license.workspace = true
+edition.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+embedded-io-async = "0.6.1"
+heapless = { workspace = true }
+ariel-os = { path = "../../src/ariel-os", features = [
+  "override-network-config",
+  "tcp",
+  "time",
+] }
+ariel-os-boards = { path = "../../src/ariel-os-boards" }

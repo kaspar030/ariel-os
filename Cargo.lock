@@ -5146,6 +5146,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "42a4d50cdb458045afc8131fd91b64904da29548bcb63c7236e0844936c13078"
 
 [[package]]
+name = "tcp-blinky"
+version = "0.1.0"
+dependencies = [
+ "ariel-os",
+ "ariel-os-boards",
+ "embedded-io-async",
+ "heapless 0.8.0",
+]
+
+[[package]]
 name = "tcp-echo"
 version = "0.0.0"
 dependencies = [

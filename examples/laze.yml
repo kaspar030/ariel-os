@@ -22,6 +22,7 @@ subdirs:
   - random
   - storage
   - tcp-echo
+  - tcp-blinky
   - testing
   - thread-async-interop
   - threading
