@@ -23,6 +23,7 @@ subdirs:
   - storage
   - tcp-echo
   - tcp-blinky
+  - tcp-blinky-sender
   - testing
   - thread-async-interop
   - threading
@@ -32,3 +33,4 @@ subdirs:
   - udp-echo
   - usb-keyboard
   - usb-serial
+  - mqtt-test
