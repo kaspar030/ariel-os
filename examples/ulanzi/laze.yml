@@ -1,7 +1,7 @@
 apps:
   - name: ulanzi
     context:
-      - espressif-esp32-wroom-32
+      - espressif-esp32-devkitc
     selects:
       #      - sw/threading
       - random
