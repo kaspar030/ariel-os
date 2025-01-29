@@ -1,7 +1,6 @@
 [package]
 name = "ulanzi"
 version = "0.1.0"
-authors.workspace = true
 license.workspace = true
 edition.workspace = true
 publish = false
@@ -16,7 +15,7 @@ embassy-time = { workspace = true }
 embassy-sync = { workspace = true }
 smart-leds = "0.4.0"
 esp-hal.workspace = true
-esp-hal-smartled = {git = "https://github.com/esp-rs/esp-hal-community", rev = "3562306e171dab0afae9cc28f8eb02f22e93a593", features = ["esp32", "defmt"]}
+esp-hal-smartled = {git = "https://github.com/esp-rs/esp-hal-community", rev = "2cf864775c6a0b9ba6f40d9cec472031bc9787b1", features = ["esp32", "defmt"]}
 embassy-executor = { workspace = true, default-features = false }
 embedded-graphics-core = "0.4.0"
 embedded-graphics = "0.8.1"
