@@ -16,9 +16,9 @@ const NETWORK_CONFIG: ariel_os::reexports::embassy_net::Config = {
     use ariel_os::reexports::embassy_net::{self, Ipv4Address};
 
     embassy_net::Config::ipv4_static(embassy_net::StaticConfigV4 {
-        address: embassy_net::Ipv4Cidr::new(Ipv4Address::new(10, 42, 1, 61), 24),
+        address: embassy_net::Ipv4Cidr::new(Ipv4Address::new(10, 42, 0, 61), 24),
         dns_servers: heapless::Vec::new(),
-        gateway: Some(Ipv4Address::new(10, 42, 1, 1)),
+        gateway: Some(Ipv4Address::new(10, 42, 0, 1)),
     })
 };
 
@@ -32,6 +32,8 @@ async fn tcp_blinky_sender() {
     let mut toggle = true;
 
     loop {
+        stack.wait_config_up().await;
+
         let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
         socket.set_timeout(Some(Duration::from_secs(10)));
 
@@ -41,10 +43,10 @@ async fn tcp_blinky_sender() {
         //     continue;
         // }
 
-        info!("Connecting to 10.42.0.61:1234...");
+        info!("Connecting to 10.42.0.62:1234...");
         if let Err(e) = socket
             .connect(embassy_net::IpEndpoint::new(
-                IpAddress::v4(10, 42, 0, 61),
+                IpAddress::v4(10, 42, 0, 62),
                 1234,
             ))
             .await
@@ -53,14 +55,13 @@ async fn tcp_blinky_sender() {
             continue;
         }
 
-        info!("Received connection from {:?}", socket.remote_endpoint());
+        info!("connected to {:?}", socket.remote_endpoint());
 
         loop {
-            let mut msg = b"0";
-
-            if toggle {
-                msg = b"1";
-            }
+            let msg = match toggle {
+                false => b"0",
+                true => b"1",
+            };
 
             match socket.write_all(msg).await {
                 Ok(()) => {
