@@ -11,10 +11,12 @@ use ariel_os::hal::peripherals;
 use ariel_os::time::{Duration, Timer};
 use embassy_sync::blocking_mutex::{raw::CriticalSectionRawMutex, Mutex};
 use embassy_sync::signal::Signal;
+use esp_hal::time::RateExtU32;
+use esp_hal::Async;
 
-ariel_os::define_peripherals!(UlanziPeripherals {
-    buzzer: GPIO_15,
-    matrix: GPIO_32,
+ariel_os::hal::define_peripherals!(UlanziPeripherals {
+    buzzer: GPIO15,
+    matrix: GPIO32,
     rmt: RMT,
 });
 
@@ -30,12 +32,11 @@ async fn matrix_refresh(peripherals: UlanziPeripherals) {
     let mut buzzer = Output::new(peripherals.buzzer, Level::Low);
     buzzer.set_low();
 
-    use esp_hal::prelude::*;
     use esp_hal::rmt::Rmt;
     use esp_hal_smartled::{asynch::SmartLedAdapterAsync, smart_led_buffer};
 
     let freq = 80u32.MHz();
-    let rmt = Rmt::new_async(peripherals.rmt, freq).unwrap();
+    let rmt = Rmt::new(peripherals.rmt, freq).unwrap().into_async();
     let rmt_buffer = smart_led_buffer!(N_LEDS + 11);
     let mut led = SmartLedAdapterAsync::new(rmt.channel0, peripherals.matrix, rmt_buffer);
 

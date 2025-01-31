@@ -15,7 +15,7 @@ embassy-time = { workspace = true }
 embassy-sync = { workspace = true }
 smart-leds = "0.4.0"
 esp-hal.workspace = true
-esp-hal-smartled = {git = "https://github.com/esp-rs/esp-hal-community", rev = "2cf864775c6a0b9ba6f40d9cec472031bc9787b1", features = ["esp32", "defmt"]}
+esp-hal-smartled = { path = "/home/kaspar/src/esp-hal-community/esp-hal-smartled",  features = ["esp32", "defmt"]}
 embassy-executor = { workspace = true, default-features = false }
 embedded-graphics-core = "0.4.0"
 embedded-graphics = "0.8.1"
