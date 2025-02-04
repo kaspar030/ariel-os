@@ -24,6 +24,7 @@ subdirs:
   - tcp-echo
   - tcp-blinky
   - tcp-blinky-sender
+  - tcp-blinky-button-sender
   - testing
   - thread-async-interop
   - threading
