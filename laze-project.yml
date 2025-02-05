@@ -664,6 +664,17 @@ modules:
         FEATURES:
           - ariel-os/network-config-static
 
+  - name: network-config-override
+    help: use custom network configuration
+    selects:
+      - network
+    provides_unique:
+      - network-config
+    env:
+      global:
+        FEATURES:
+          - ariel-os/network-config-override
+
   - name: sw/storage
     context:
       - rp2040

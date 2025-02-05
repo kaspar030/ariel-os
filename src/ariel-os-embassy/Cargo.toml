@@ -21,6 +21,7 @@ embassy-net = { workspace = true, optional = true, features = [
   "dhcpv4",
   "medium-ethernet",
   "proto-ipv6",
+  "multicast",
 ] }
 embassy-sync = { workspace = true }
 embassy-time = { workspace = true, optional = true }

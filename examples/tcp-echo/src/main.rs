@@ -7,6 +7,9 @@ use ariel_os::{debug::log::*, net, reexports::embassy_net, time::Duration};
 use embassy_net::tcp::TcpSocket;
 use embedded_io_async::Write;
 
+#[ariel_os::config(network)]
+const NETWORK_CONFIG: embassy_net::Config = { embassy_net::Config::ipv6_slaac() };
+
 #[ariel_os::task(autostart)]
 async fn tcp_echo() {
     let stack = net::network_stack().await.unwrap();
