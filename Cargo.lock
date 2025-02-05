@@ -1568,7 +1568,7 @@ dependencies = [
 [[package]]
 name = "embassy-net"
 version = "0.6.0"
-source = "git+https://github.com/ariel-os/embassy?branch=embassy-net-v0.6.0%2Bariel-os#3d9f77ee05cdb18f1cd676233bcda9b6f7be3369"
+source = "git+https://github.com/ariel-os/embassy?branch=embassy-net-v0.6.0%2Bariel-os%2Bslaac#bb5fb30881ffb55254935eeaeacef568c9e8fda7"
 dependencies = [
  "defmt",
  "document-features",
@@ -1579,7 +1579,7 @@ dependencies = [
  "embedded-nal-async",
  "heapless 0.8.0",
  "managed",
- "smoltcp",
+ "smoltcp 0.12.0 (git+https://github.com/ariel-os/smoltcp?rev=39738778a3e1e3e2d8210d6e3eda827666cae079)",
 ]
 
 [[package]]
@@ -2315,7 +2315,7 @@ dependencies = [
  "portable-atomic",
  "portable_atomic_enum",
  "rand_core",
- "smoltcp",
+ "smoltcp 0.12.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "xtensa-lx-rt",
 ]
 
@@ -4706,6 +4706,19 @@ name = "smoltcp"
 version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dad095989c1533c1c266d9b1e8d70a1329dd3723c3edac6d03bbd67e7bf6f4bb"
+dependencies = [
+ "bitflags 1.3.2",
+ "byteorder",
+ "cfg-if",
+ "defmt",
+ "heapless 0.8.0",
+ "managed",
+]
+
+[[package]]
+name = "smoltcp"
+version = "0.12.0"
+source = "git+https://github.com/ariel-os/smoltcp?rev=39738778a3e1e3e2d8210d6e3eda827666cae079#39738778a3e1e3e2d8210d6e3eda827666cae079"
 dependencies = [
  "bitflags 1.3.2",
  "byteorder",
