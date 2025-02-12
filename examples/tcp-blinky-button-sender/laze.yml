@@ -1,5 +1,5 @@
 apps:
-  - name: tcp-blinky-sender
+  - name: tcp-blinky-button-sender
     env:
       global:
         CARGO_ENV:

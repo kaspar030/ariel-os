@@ -34,3 +34,4 @@ subdirs:
   - udp-echo
   - usb-keyboard
   - usb-serial
+  - embedded-nal-async-example

@@ -1,0 +1,23 @@
+[package]
+name = "embedded-nal-async-example"
+license.workspace = true
+edition.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+embassy-futures = { workspace = true }
+ariel-os = { path = "../../src/ariel-os", features = ["udp", "net"] }
+embedded-io-async = "0.6.1"
+embedded-nal-async = "0.8"
+embassy-net = { workspace = true, features = [
+    "udp",
+    "proto-ipv4",
+    "proto-ipv6",
+] }
+embassy-sync.workspace = true
+ariel-os-embassy = { workspace = true, features = ["net"] }
+ariel-os-boards = { path = "../../src/ariel-os-boards" }
+
