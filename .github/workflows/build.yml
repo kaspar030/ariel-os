@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: depot-ubuntu-24.04
 
     env:
       SCCACHE_GHA_ENABLED: "true"
@@ -144,7 +144,7 @@ jobs:
 
   build-success:
     if: ${{ always() }}
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     name: Final Results
     needs: [build]
     steps:
