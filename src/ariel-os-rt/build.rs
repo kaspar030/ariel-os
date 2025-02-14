@@ -38,7 +38,7 @@ fn main() {
         isr_stack_template = isr_stack_template.replace("${INSERT_BEFORE}", insert_before);
         isr_stack_template = isr_stack_template.replace("${STACK_REGION}", region);
         std::fs::write(out.join("isr_stack.x"), &isr_stack_template).unwrap();
-        println!("cargo:rerun-if-changed=isr_stack.x");
+        println!("cargo:rerun-if-changed=isr_stack.ld.in");
     }
 
     std::fs::copy("linkme.x", out.join("linkme.x")).unwrap();
