@@ -18,7 +18,6 @@ jobs:
     runs-on: depot-ubuntu-24.04
 
     env:
-      SCCACHE_GHA_ENABLED: "true"
       RUSTC_WRAPPER: "sccache"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # clang-sys and thus bindgen is sensitive to multiple installed versions
