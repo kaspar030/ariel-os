@@ -1,7 +1,5 @@
 name: Build (on Depot)
 
-# some unrelated change to see sccache effect
-#
 on:
   pull_request:
     branches:
