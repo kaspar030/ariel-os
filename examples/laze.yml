@@ -35,3 +35,4 @@ subdirs:
   - usb-keyboard
   - usb-serial
   - embedded-nal-async-example
+  - mqtt-sn-example
