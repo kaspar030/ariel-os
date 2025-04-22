@@ -63,11 +63,21 @@ jobs:
         if: steps.result-cache.outputs.cache-hit != 'true'
         run: echo "toolchain=$(scripts/rust-toolchain.sh)" >> $GITHUB_OUTPUT
 
-      - name: Install toolchain
+      - name: Install nightly toolchain
         if: steps.result-cache.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ steps.get_toolchain.outputs.toolchain }}
+          targets: riscv32imc-unknown-none-elf,riscv32imac-unknown-none-elf,thumbv6m-none-eabi,thumbv7m-none-eabi,thumbv7em-none-eabi,thumbv8m.main-none-eabi
+          # rust-src: Used for -Zbuild-std.
+          # rustfmt: Used by bindgen for liboscore
+          components: rust-src, rustfmt
+
+      - name: Install stable toolchain
+        if: steps.result-cache.outputs.cache-hit != 'true'
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.85.0
           targets: riscv32imc-unknown-none-elf,riscv32imac-unknown-none-elf,thumbv6m-none-eabi,thumbv7m-none-eabi,thumbv7em-none-eabi,thumbv8m.main-none-eabi
           # rust-src: Used for -Zbuild-std.
           # rustfmt: Used by bindgen for liboscore
