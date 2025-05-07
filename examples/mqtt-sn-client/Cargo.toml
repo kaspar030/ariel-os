@@ -23,10 +23,11 @@ ariel-os-boards = { path = "../../src/ariel-os-boards" }
 log = "0.4.25"
 heapless = { version = "0.8", features = ["serde"] }
 bilge = "0.2.0"
+embedded-time = "0.12.1"
 
-[dev-dependencies]
-embedded-test = { workspace = true }
-
-[[bin]]
-name = "mqtt-sn-client"
-harness = false
+#[dev-dependencies]
+#embedded-test = { workspace = true }
+#
+#[[bin]]
+#name = "mqtt-sn-client"
+#harness = false

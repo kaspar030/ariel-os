@@ -1,8 +1,6 @@
 use crate::flags::Flags;
 use bilge::prelude::*;
 
-static PUBLISH_BYTE_LEN: usize = 5;
-
 #[bitsize(8)]
 #[derive(TryFromBits, Debug, PartialEq)]
 enum ReturnCode {
@@ -25,17 +23,30 @@ pub struct SearchGw {
     radius: u8,
 }
 
+impl SearchGw {
+    pub fn to_be_bytes(&self) -> [u8; 1] {
+        self.value.to_be_bytes()
+    }
+}
+
 pub struct GwInfo {
     /// address of the indicated GW; optional
     gw_add: usize,
     gw_id: u8,
 }
 
+#[bitsize(32)]
+#[derive(TryFromBits, DebugBits, PartialEq)]
 pub struct Connect {
-    client_id: u8,
     duration: u16,
     protocol_id: u8,
     flags: Flags,
+}
+
+impl Connect {
+    pub fn to_be_bytes(&self) -> [u8; 4] {
+        self.value.to_be_bytes()
+    }
 }
 
 #[bitsize(8)]
@@ -101,10 +112,9 @@ pub struct PubRec {
     msg_id: u16,
 }
 
-#[bitsize(40)]
+#[bitsize(24)]
 #[derive(TryFromBits, DebugBits, PartialEq)]
 pub struct Subscribe {
-    topic_id: u16, // or topic_name length n
     msg_id: u16,
     flags: Flags,
 }

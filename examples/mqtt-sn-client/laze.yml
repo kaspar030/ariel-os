@@ -6,4 +6,4 @@ apps:
           - CONFIG_ISR_STACKSIZE=16384
     selects:
       - network
-      - embedded-test
+#      - embedded-test

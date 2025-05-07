@@ -1,9 +1,10 @@
+use ariel_os::debug::log::{defmt, info};
 use ariel_os::debug::println;
 use bilge::give_me_error;
 use bilge::prelude::*;
 
 #[bitsize(8)]
-#[derive(TryFromBits, Debug, PartialEq)]
+#[derive(TryFromBits, Debug, PartialEq, defmt::Format)]
 pub enum MsgType {
     Advertise = 0x00,
     SearchGw = 0x01,
@@ -36,23 +37,20 @@ pub enum MsgType {
 }
 
 #[bitsize(32)]
-#[derive(TryFromBits, DebugBits, PartialEq)]
+#[derive(TryFromBits, DebugBits, PartialEq, defmt::Format)]
 pub struct HeaderLong {
     msg_type: MsgType,
-    /// max 3 byte
-    /// if first byte == 0x01, following 2 bytes specify length
-    /// else only one byte
     length: u24,
 }
 
 #[bitsize(16)]
-#[derive(TryFromBits, DebugBits, PartialEq)]
+#[derive(TryFromBits, DebugBits, PartialEq, defmt::Format)]
 pub struct HeaderShort {
     msg_type: MsgType,
     length: u8,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, defmt::Format)]
 pub enum Header {
     Long(HeaderLong),
     Short(HeaderShort),
@@ -64,6 +62,7 @@ impl Header {
     pub fn new(msg_type: MsgType, length: u16) -> Self {
         let length_bytes = length.to_be_bytes();
         if length_bytes[0] == 0u8 {
+            // todo simplyfy by checking < 256?
             Self::Short(HeaderShort::new(msg_type, length_bytes[1]))
         } else {
             Self::Long(HeaderLong::new(
@@ -108,9 +107,16 @@ impl Header {
     pub fn to_be_bytes(&self) -> [u8; 4] {
         let mut result: [u8; 4] = [0u8; 4];
         match self {
-            Header::Long(long) => result.copy_from_slice(&long.value.to_be_bytes()[..4]),
-            Header::Short(short) => result.copy_from_slice(&short.value.to_be_bytes()[..2]),
+            Header::Long(long) => {
+                info!("long {:?}", long.value.to_be_bytes());
+                result.copy_from_slice(&long.value.to_be_bytes()[..4])
+            }
+            Header::Short(short) => {
+                info!("short {:?}", short.value.to_be_bytes());
+                result[..2].copy_from_slice(&short.value.to_be_bytes()[..2])
+            }
         }
+        info!("result {:?}", result);
         result
     }
 }
