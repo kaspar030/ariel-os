@@ -1,8 +1,9 @@
 use crate::header::{Header, MsgType};
 use crate::message_variable_part::*;
-use crate::packet::Error::PacketNotRecognized;
+use crate::packet::Error::{PacketNotRecognized, ParsingFailed};
 use ariel_os::debug::log::info;
 use bilge::arbitrary_int::{u24, u40};
+use bilge::BitsError;
 use core::str::from_utf8;
 
 #[derive(PartialEq)]
@@ -38,6 +39,7 @@ pub enum Packet<'a> {
 
 pub enum Error {
     PacketNotRecognized,
+    ParsingFailed,
 }
 
 impl Packet<'_> {
@@ -57,13 +59,14 @@ impl Packet<'_> {
             // MsgType::GwInfo => {}
             // MsgType::Connect => {} // no recv
             MsgType::ConnAck => {
-                const CONNACK_BYTE_LEN: usize = 1;
-                let mvp_byte_len = header.len() + CONNACK_BYTE_LEN;
+                let mvp_size = header.size() + ConnAck::SIZE;
 
-                let mvp: [u8; CONNACK_BYTE_LEN] =
-                    bytes[header.len()..mvp_byte_len].try_into().unwrap();
+                let mvp: [u8; ConnAck::SIZE] = bytes[header.size()..mvp_size].try_into().unwrap();
 
-                let conn_ack = ConnAck::try_from(u8::from_be_bytes(mvp)).unwrap();
+                let conn_ack = match ConnAck::try_from(u8::from_be_bytes(mvp)) {
+                    Ok(it) => it,
+                    Err(_) => return Err(ParsingFailed),
+                };
 
                 Ok(Packet::ConnAck { header, conn_ack })
             }
@@ -74,15 +77,22 @@ impl Packet<'_> {
             // MsgType::Register => {}
             // MsgType::RegAck => {}
             MsgType::Publish => {
-                const PUBLISH_BYTE_LEN: usize = 5;
-                let mvp_byte_len = header.len() + PUBLISH_BYTE_LEN;
+                let mvp_size = header.size() + 4;
 
-                let data: &str = from_utf8(&bytes[mvp_byte_len..]).unwrap();
+                let data: &str = match from_utf8(&bytes[mvp_size..]) {
+                    Ok(it) => it,
+                    Err(_) => return Err(ParsingFailed),
+                };
 
-                let mvp: [u8; PUBLISH_BYTE_LEN] =
-                    bytes[header.len()..mvp_byte_len].try_into().unwrap();
+                let mvp: [u8; Publish::SIZE] = match bytes[header.size()..mvp_size].try_into() {
+                    Ok(it) => it,
+                    Err(_) => return Err(ParsingFailed),
+                };
 
-                let publish = Publish::try_from(u40::from_be_bytes(mvp)).unwrap();
+                let publish = match Publish::try_from(u40::from_be_bytes(mvp)) {
+                    Ok(it) => it,
+                    Err(_) => return Err(ParsingFailed),
+                };
 
                 Ok(Packet::Publish {
                     header,
@@ -95,15 +105,11 @@ impl Packet<'_> {
             // MsgType::PubRec => {}
             // MsgType::PubRel => {}
             MsgType::Subscribe => {
-                const SUBSCRIBE_BYTE_LEN: usize = 3;
+                let mvp_size = header.size() + Subscribe::SIZE;
 
-                // core::mem::size_of::<Subscribe>(); todo
-                let mvp_byte_len = header.len() + SUBSCRIBE_BYTE_LEN;
+                let topic: &str = from_utf8(&bytes[Subscribe::SIZE..]).unwrap();
 
-                let topic: &str = from_utf8(&bytes[SUBSCRIBE_BYTE_LEN..]).unwrap();
-
-                let mvp: [u8; SUBSCRIBE_BYTE_LEN] =
-                    bytes[header.len()..mvp_byte_len].try_into().unwrap();
+                let mvp: [u8; Subscribe::SIZE] = bytes[header.size()..mvp_size].try_into().unwrap();
 
                 let subscribe = Subscribe::try_from(u24::from_be_bytes(mvp)).unwrap();
 
@@ -132,8 +138,8 @@ impl Packet<'_> {
         match self {
             // MsgType::Advertise => {}
             Packet::SearchGw { header, search_gw } => {
-                buf[..header.len()].copy_from_slice(&header.to_be_bytes());
-                buf[header.len()..].copy_from_slice(&search_gw.to_be_bytes());
+                buf[..header.size()].copy_from_slice(&header.to_be_bytes());
+                buf[header.size()..].copy_from_slice(&search_gw.to_be_bytes());
             }
             // MsgType::GwInfo => {}
             Packet::Connect {
@@ -144,23 +150,13 @@ impl Packet<'_> {
                 if client_id.len() > 23 {
                     panic!("Client Id longer than maximum of 23 characters");
                 }
+                let mvp_size = header.size() + Connect::SIZE;
 
-                // info!("Connect size {:?}", size_of::<Connect>());
-                //
-                // info!("buf {:?}", buf[..header.len()]);
-                buf[..header.len()].copy_from_slice(&header.to_be_bytes()[..header.len()]);
-                // info!("buf {:?}", buf[..header.len()]);
-                buf[header.len()..header.len() + size_of::<Connect>()]
-                    .copy_from_slice(&connect.to_be_bytes());
-                // info!("buf {:?}", buf[..header.len() + size_of::<Connect>()]);
-                // info!("client_id: {:?}", client_id.as_bytes().len());
-                // info!(
-                //     "ci len: {:?}",
-                //     header.length_mvp() + header.len() - header.len() - size_of::<Connect>()
-                // );
-                buf[header.len() + size_of::<Connect>()..header.len() + header.length_mvp()]
-                    .copy_from_slice(client_id.as_bytes());
-                // info!("buf {:?}", buf[..header.len() + header.length_mvp()]);
+                // Self::construct_buf(buf, header, connect, Some(client_id));
+
+                buf[..header.size()].copy_from_slice(&header.to_be_bytes()[..header.size()]);
+                buf[header.size()..mvp_size].copy_from_slice(&connect.to_be_bytes());
+                buf[mvp_size..header.length()].copy_from_slice(client_id.as_bytes());
             }
             // MsgType::ConnAck => {} // no send
             // MsgType::WillTopicReq => {}
@@ -174,9 +170,13 @@ impl Packet<'_> {
                 publish,
                 data,
             } => {
-                buf[..header.len()].copy_from_slice(&header.to_be_bytes());
-                buf[header.len()..].copy_from_slice(&publish.to_be_bytes());
-                buf[header.len() + header.length_mvp()..].copy_from_slice(data.as_bytes());
+                let mvp_size = header.size() + Publish::SIZE;
+
+                // Self::construct_buf(buf, header, publish, Some(data));
+
+                buf[..header.size()].copy_from_slice(&header.to_be_bytes()[..header.size()]);
+                buf[header.size()..mvp_size].copy_from_slice(&publish.to_be_bytes());
+                buf[mvp_size..header.length()].copy_from_slice(data.as_bytes());
             }
             // MsgType::PubAck => {}
             // MsgType::PubComp => {}
@@ -195,6 +195,30 @@ impl Packet<'_> {
             // MsgType::WillMsgEsp => {}
             // MsgType::Encapsulated => {}
             _ => {}
+        }
+    }
+
+    // fn construct_buf(buf: &mut [u8], header: &Header, mvp: &impl MVP, payload: Option<&str>) {
+    //     match mvp {
+    //     }
+    //
+    //     let mvp_size = header.size() + MVP::SIZE;
+    //
+    //     buf[..header.size()].copy_from_slice(&header.to_be_bytes()[..header.size()]);
+    //     buf[header.size()..mvp_size].copy_from_slice(&mvp.to_be_bytes());
+    //
+    //     if payload.is_some() {
+    //         buf[mvp_size..header.length()].copy_from_slice(payload.unwrap().as_bytes());
+    //     }
+    // }
+
+    pub fn get_msg_type(&self) -> MsgType {
+        match self {
+            Packet::Connect { header, .. } => header.msg_type(),
+            Packet::ConnAck { header, .. } => header.msg_type(),
+            Packet::Publish { header, .. } => header.msg_type(),
+            Packet::Subscribe { header, .. } => header.msg_type(),
+            Packet::SearchGw { header, .. } => header.msg_type(),
         }
     }
 }

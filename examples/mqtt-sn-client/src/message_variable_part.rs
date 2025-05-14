@@ -44,7 +44,8 @@ pub struct Connect {
 }
 
 impl Connect {
-    pub fn to_be_bytes(&self) -> [u8; 4] {
+    pub(crate) const SIZE: usize = 4;
+    pub(crate) fn to_be_bytes(&self) -> [u8; Self::SIZE] {
         self.value.to_be_bytes()
     }
 }
@@ -53,6 +54,10 @@ impl Connect {
 #[derive(TryFromBits, DebugBits, PartialEq)]
 pub struct ConnAck {
     return_code: ReturnCode,
+}
+
+impl ConnAck {
+    pub const SIZE: usize = 1;
 }
 
 pub struct WillTopicReq {}
@@ -93,7 +98,9 @@ pub struct Publish {
 }
 
 impl Publish {
-    pub fn to_be_bytes(&self) -> [u8; 5] {
+    pub(crate) const SIZE: usize = 5;
+
+    pub(crate) fn to_be_bytes(&self) -> [u8; Self::SIZE] {
         self.value.to_be_bytes()
     }
 }
@@ -117,6 +124,10 @@ pub struct PubRec {
 pub struct Subscribe {
     msg_id: u16,
     flags: Flags,
+}
+
+impl Subscribe {
+    pub const SIZE: usize = 3;
 }
 
 #[bitsize(48)]

@@ -12,8 +12,6 @@ use ariel_os::{
     reexports::embassy_time::{Duration, WithTimeout},
 };
 use bilge::prelude::*;
-use core::any::Any;
-use core::hash::Hash;
 use core::net::SocketAddr;
 use embedded_nal_async::UnconnectedUdp;
 
@@ -138,7 +136,7 @@ impl<'a> MqttSn<'a> {
             dup,
         );
 
-        let msg_len = calculate_message_length(client_id.len(), mvp::Connect::BITS / 8);
+        let msg_len = calculate_message_length(client_id.len(), mvp::Connect::SIZE);
 
         let packet = Packet::Connect {
             header: Header::new(MsgType::Connect, msg_len),
@@ -155,15 +153,41 @@ impl<'a> MqttSn<'a> {
             .with_timeout(Duration::from_millis(duration_millis as u64))
             .await
         {
-            Ok(_res) => {
-                // if res? != Packet::ConnAck {
-                //     return Err(TransmissionFailed);
-                // }
+            Ok(res) => {
+                if res?.get_msg_type() != MsgType::ConnAck {
+                    return Err(TransmissionFailed);
+                }
                 self.state = State::Awake;
                 Ok(())
             }
             Err(_) => Err(Timeout),
         }
+    }
+
+    pub fn subscribe(
+        &mut self,
+        topic: &str,
+        topic_id_type: TopicIdType,
+        msg_id: u16,
+        dup: bool,
+        qos: QoS,
+    ) -> Result<(), Error> {
+        // let flags = Flags::new(
+        //     topic_id_type,
+        //     true,
+        //     false,
+        //     false,
+        //     qos,
+        //     dup,
+        // );
+        // let msg_len = calculate_message_length(topic.len(), mvp::Subscribe::SIZE);
+        //
+        // let packet = Packet::Subscribe {
+        //     header: Header::new(MsgType::Subscribe, msg_len),
+        //     subscribe: mvp::Subscribe::new(msg_id, flags),
+        //     topic
+        // };
+        todo!("NOT IMPLEMENTED")
     }
 
     pub fn disconnect(&self) -> Result<(), Error> {
@@ -195,8 +219,8 @@ pub enum Error {
     ConversionFailed,
 }
 
-fn calculate_message_length(payload_len: usize, msg_type_byte_len: usize) -> u16 {
-    let mvp_len = payload_len + msg_type_byte_len;
+fn calculate_message_length(payload_len: usize, mvp_byte_len: usize) -> u16 {
+    let mvp_len = payload_len + mvp_byte_len;
 
     if (mvp_len + HeaderShort::BITS / 8) > 256 {
         (mvp_len + HeaderLong::BITS / 8) as u16

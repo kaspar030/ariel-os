@@ -79,6 +79,7 @@ impl Header {
         }
     }
 
+    /// Get the total message length
     pub fn length(&self) -> usize {
         match self {
             Header::Short(header_short) => header_short.length() as usize,
@@ -97,7 +98,7 @@ impl Header {
         matches!(self, Self::Long(_))
     }
 
-    pub fn len(&self) -> usize {
+    pub fn size(&self) -> usize {
         match self {
             Header::Short(_) => 2,
             Header::Long(_) => 4,

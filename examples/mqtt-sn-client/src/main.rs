@@ -11,10 +11,13 @@ mod mqtt_sn;
 mod packet;
 mod udp_nal;
 
+use crate::flags::{QoS, TopicIdType};
 use crate::mqtt_sn::MqttSn;
 use ariel_os::{debug::log::*, net};
+// use ariel_os_random as rng;
 use core::net::SocketAddr;
 use embassy_net::udp::{PacketMetadata, UdpSocket};
+use rand::Rng as _;
 
 #[ariel_os::task(autostart)]
 async fn mqtt_sn_client() {
@@ -61,6 +64,19 @@ async fn mqtt_sn_client() {
         }
 
         info!("...connected!");
+        //
+        // let mut rng = ariel_os::random::fast_rng();
+        //
+        // mqtt_sn
+        //     .subscribe(
+        //         "topic1",
+        //         TopicIdType::IdNormal,
+        //         rng.gen_range(1..=u16::MAX),
+        //         false,
+        //         QoS::Zero,
+        //     )
+        //     .expect("TODO: panic message");
+
         break;
     }
 }
