@@ -1496,6 +1496,11 @@ builders:
     provides:
       - has_usb_device_port
 
+  - name: espressif-esp32-s3-lcd-ev-board
+    parent: esp32-s3-wroom-1
+    provides:
+      - has_usb_device_port
+
   - name: nrf5340dk
     parent: nrf5340
     provides:
