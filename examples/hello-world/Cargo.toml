@@ -10,3 +10,7 @@ workspace = true
 [dependencies]
 ariel-os = { path = "../../src/ariel-os" }
 ariel-os-boards = { path = "../../src/ariel-os-boards" }
+esp-hal = { workspace = true }
+fugit = { workspace = true }
+
+esp-hal-smartled = { version = "0.14.0" }

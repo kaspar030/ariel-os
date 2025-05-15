@@ -3,9 +3,9 @@
 
 use ariel_os::debug::{ExitCode, exit, log::*};
 
+mod led;
+
 #[ariel_os::task(autostart)]
 async fn main() {
     info!("Hello World!");
-
-    exit(ExitCode::SUCCESS);
 }
