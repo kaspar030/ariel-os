@@ -97,7 +97,6 @@ spi = ["dep:embassy-embedded-hal", "dep:fugit", "ariel-os-embassy-common/spi"]
 
 ## Enables threading support.
 threading = [
-  "esp-wifi?/preempt-extern",
   "dep:ariel-os-threads",
   "dep:esp-wifi-sys",
 ]

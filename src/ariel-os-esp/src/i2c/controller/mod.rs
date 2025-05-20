@@ -110,14 +110,14 @@ macro_rules! define_i2c_drivers {
                     }
 
                     let mut twim_config = esp_hal::i2c::master::Config::default();
-                    twim_config.frequency = config.frequency.into();
+                    twim_config.with_frequency(config.frequency.into());
                     #[cfg(any(context = "esp32c3", context = "esp32c6", context = "esp32s3"))]
                     let disabled_timeout = BusTimeout::Disabled;
                     #[cfg(context = "esp32")]
                     // Use the maximum value as timeout cannot be disabled.
                     let disabled_timeout = BusTimeout::Maximum;
                     // Disable timeout as we implement it at a higher level.
-                    twim_config.timeout = disabled_timeout;
+                    twim_config.with_timeout(disabled_timeout);
 
                     // FIXME(safety): enforce that the init code indeed has run
                     // SAFETY: this struct being a singleton prevents us from stealing the

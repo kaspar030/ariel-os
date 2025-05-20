@@ -77,7 +77,7 @@ mod alloc {
 
         debug!("ariel-os-alloc: initializing heap with {} bytes", HEAP_SIZE);
 
-        esp_alloc::heap_allocator!(HEAP_SIZE);
+        esp_alloc::heap_allocator!(size: HEAP_SIZE);
     }
 
     /// Initializes **no** heap.

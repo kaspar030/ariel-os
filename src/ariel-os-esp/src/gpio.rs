@@ -9,7 +9,7 @@ pub mod input {
     };
 
     #[doc(hidden)]
-    pub use esp_hal::gpio::{Input, InputPin};
+    pub use esp_hal::gpio::{Input, InputConfig, InputPin};
 
     #[cfg(feature = "external-interrupts")]
     use ariel_os_embassy_common::gpio::input::InterruptError;
@@ -30,7 +30,7 @@ pub mod input {
     ) -> Result<Input<'static>, core::convert::Infallible> {
         let pull = from_pull(pull);
 
-        Ok(Input::new(pin, pull))
+        Ok(Input::new(pin, InputConfig::default().with_pull(pull)))
     }
 
     #[cfg(feature = "external-interrupts")]
@@ -59,7 +59,7 @@ pub mod output {
     use esp_hal::{gpio::Level, peripheral::Peripheral};
 
     #[doc(hidden)]
-    pub use esp_hal::gpio::{Output, OutputPin};
+    pub use esp_hal::gpio::{Output, OutputConfig, OutputPin};
 
     /// Whether outputs support configuring their drive strength.
     pub const DRIVE_STRENGTH_CONFIGURABLE: bool = true;
@@ -77,9 +77,8 @@ pub mod output {
             ariel_os_embassy_common::gpio::Level::Low => Level::Low,
             ariel_os_embassy_common::gpio::Level::High => Level::High,
         };
-        let mut output = Output::new(pin, initial_level);
-        output.set_drive_strength(drive_strength.into());
-        output
+        let output_config = OutputConfig::default().with_drive_strength(drive_strength.into());
+        Output::new(pin, initial_level, output_config)
     }
 }
 
