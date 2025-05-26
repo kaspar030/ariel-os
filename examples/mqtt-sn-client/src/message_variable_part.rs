@@ -1,8 +1,9 @@
 use crate::flags::Flags;
+use ariel_os::debug::log::defmt;
 use bilge::prelude::*;
 
 #[bitsize(8)]
-#[derive(TryFromBits, Debug, PartialEq)]
+#[derive(TryFromBits, Debug, PartialEq, defmt::Format)]
 enum ReturnCode {
     Accepted = 0x00,
     RejectedCongestion = 0x01,
@@ -24,7 +25,9 @@ pub struct SearchGw {
 }
 
 impl SearchGw {
-    pub fn to_be_bytes(&self) -> [u8; 1] {
+    pub const SIZE: usize = 1;
+
+    pub fn to_be_bytes(&self) -> [u8; Self::SIZE] {
         self.value.to_be_bytes()
     }
 }
@@ -44,14 +47,14 @@ pub struct Connect {
 }
 
 impl Connect {
-    pub(crate) const SIZE: usize = 4;
-    pub(crate) fn to_be_bytes(&self) -> [u8; Self::SIZE] {
+    pub const SIZE: usize = 4;
+    pub fn to_be_bytes(&self) -> [u8; Self::SIZE] {
         self.value.to_be_bytes()
     }
 }
 
 #[bitsize(8)]
-#[derive(TryFromBits, DebugBits, PartialEq)]
+#[derive(TryFromBits, DebugBits, PartialEq, defmt::Format)]
 pub struct ConnAck {
     return_code: ReturnCode,
 }
@@ -98,9 +101,9 @@ pub struct Publish {
 }
 
 impl Publish {
-    pub(crate) const SIZE: usize = 5;
+    pub const SIZE: usize = 5;
 
-    pub(crate) fn to_be_bytes(&self) -> [u8; Self::SIZE] {
+    pub fn to_be_bytes(&self) -> [u8; Self::SIZE] {
         self.value.to_be_bytes()
     }
 }
@@ -128,6 +131,10 @@ pub struct Subscribe {
 
 impl Subscribe {
     pub const SIZE: usize = 3;
+
+    pub fn to_be_bytes(&self) -> [u8; Self::SIZE] {
+        self.value.to_be_bytes()
+    }
 }
 
 #[bitsize(48)]
@@ -137,6 +144,10 @@ pub struct SubAck {
     msg_id: u16,
     topic_id: u16,
     flags: Flags,
+}
+
+impl SubAck {
+    pub const SIZE: usize = 6;
 }
 
 #[bitsize(40)]

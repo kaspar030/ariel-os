@@ -1,3 +1,4 @@
+use crate::message_variable_part::Publish;
 use crate::mqtt_sn::Error::ConversionFailed;
 use crate::{
     flags::{Flags, QoS, TopicIdType},
@@ -77,8 +78,20 @@ impl<'a> MqttSn<'a> {
     async fn receive(&mut self) -> Result<Packet, Error> {
         match self.socket.receive_into(self.recv_buf).await {
             Ok((n, _, _)) => match Packet::try_from(&self.recv_buf[..n]) {
-                Ok(packet) => Ok(packet),
-                Err(_) => Err(ConversionFailed),
+                Ok(packet) => {
+                    info!("received: {:?}", packet.get_msg_type());
+                    match &packet {
+                        Packet::ConnAck { header, conn_ack } => {
+                            info!("{:?}", conn_ack);
+                        }
+                        _ => {}
+                    }
+                    Ok(packet)
+                }
+                Err(_) => {
+                    info!("Conversion error for: {}", &self.recv_buf[..n]);
+                    Err(ConversionFailed)
+                }
             },
             Err(_) => {
                 info!("Transmission read error");
@@ -164,7 +177,7 @@ impl<'a> MqttSn<'a> {
         }
     }
 
-    pub fn subscribe(
+    pub async fn subscribe(
         &mut self,
         topic: &str,
         topic_id_type: TopicIdType,
@@ -172,22 +185,60 @@ impl<'a> MqttSn<'a> {
         dup: bool,
         qos: QoS,
     ) -> Result<(), Error> {
-        // let flags = Flags::new(
-        //     topic_id_type,
-        //     true,
-        //     false,
-        //     false,
-        //     qos,
-        //     dup,
-        // );
-        // let msg_len = calculate_message_length(topic.len(), mvp::Subscribe::SIZE);
-        //
-        // let packet = Packet::Subscribe {
-        //     header: Header::new(MsgType::Subscribe, msg_len),
-        //     subscribe: mvp::Subscribe::new(msg_id, flags),
-        //     topic
-        // };
-        todo!("NOT IMPLEMENTED")
+        let flags = Flags::new(topic_id_type, true, false, false, qos, dup);
+        let msg_len = calculate_message_length(topic.len(), mvp::Subscribe::SIZE);
+
+        info!("msg_len: {}", &msg_len);
+        info!("msg_id: {}", &msg_id);
+
+        let packet = Packet::Subscribe {
+            header: Header::new(MsgType::Subscribe, msg_len),
+            subscribe: mvp::Subscribe::new(msg_id, flags),
+            topic,
+        };
+
+        info!("write buf");
+        packet.write_to_buf(&mut self.send_buf);
+        info!("send start");
+        self.send(msg_len, self.local, self.remote).await?;
+        info!("send complete");
+
+        match self
+            .receive()
+            .with_timeout(Duration::from_millis(60000))
+            .await
+        {
+            Ok(res) => {
+                match res? {
+                    Packet::SubAck { .. } => {
+                        info!("SubAck for topic: {}", topic);
+                        self.state = State::Active;
+                        Ok(())
+                    }
+                    _ => Err(TransmissionFailed),
+                }
+                // if res.get_msg_type() != MsgType::SubAck {
+                //     return Err(TransmissionFailed);
+                // }
+                // self.state = State::Active;
+                // Ok(())
+            }
+            Err(_) => Err(Timeout),
+        }
+    }
+
+    pub async fn expect_message(&mut self) -> Option<&str> {
+        match self.receive().await {
+            Ok(res) => match res {
+                Packet::Publish {
+                    header,
+                    publish,
+                    data,
+                } => Some(data),
+                _ => None,
+            },
+            Err(_) => None,
+        }
     }
 
     pub fn disconnect(&self) -> Result<(), Error> {
@@ -212,6 +263,7 @@ impl<'a> MqttSn<'a> {
     }
 }
 
+#[derive(Debug)]
 pub enum Error {
     InvalidState,
     Timeout,

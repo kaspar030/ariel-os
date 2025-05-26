@@ -15,6 +15,7 @@ use crate::flags::{QoS, TopicIdType};
 use crate::mqtt_sn::MqttSn;
 use ariel_os::{debug::log::*, net};
 // use ariel_os_random as rng;
+use core::future::Future;
 use core::net::SocketAddr;
 use embassy_net::udp::{PacketMetadata, UdpSocket};
 use rand::Rng as _;
@@ -57,25 +58,40 @@ async fn mqtt_sn_client() {
 
         loop {
             info!("...attempt connection");
-            match mqtt_sn.connect(3000, "test", false, false, false).await {
+            match mqtt_sn.connect(60000, "test", false, false, false).await {
                 Ok(_) => break,
                 Err(_) => continue,
             };
         }
 
         info!("...connected!");
-        //
-        // let mut rng = ariel_os::random::fast_rng();
-        //
-        // mqtt_sn
-        //     .subscribe(
-        //         "topic1",
-        //         TopicIdType::IdNormal,
-        //         rng.gen_range(1..=u16::MAX),
-        //         false,
-        //         QoS::Zero,
-        //     )
-        //     .expect("TODO: panic message");
+
+        let mut rng = ariel_os::random::fast_rng();
+
+        info!("subscribing...");
+        mqtt_sn
+            .subscribe(
+                "tt",
+                TopicIdType::ShortName,
+                rng.gen_range(1..=u16::MAX),
+                false,
+                QoS::Zero,
+            )
+            .await
+            .unwrap();
+
+        loop {
+            info!("expecting message...");
+            match mqtt_sn.expect_message().await {
+                None => continue,
+                Some(msg) => {
+                    info!("{}", msg);
+                    if msg == "end" {
+                        break;
+                    }
+                }
+            }
+        }
 
         break;
     }

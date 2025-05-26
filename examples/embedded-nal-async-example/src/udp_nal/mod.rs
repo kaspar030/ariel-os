@@ -19,7 +19,7 @@
 use core::future::poll_fn;
 use core::net::SocketAddr;
 
-use embassy_net::{udp, IpAddress, IpEndpoint};
+use embassy_net::{udp, IpEndpoint};
 use embedded_nal_async as nal;
 
 mod util;
@@ -37,7 +37,7 @@ pub struct ConnectedUdp<'a> {
     // duplicate the code for the None case of the local_address by calling the right
     // get_source_address function, we'd still need an interface::Context / an interface to call
     // this through, and AFAICT we don't get access to that.
-    local: Option<IpAddress>,
+    local: IpEndpoint,
     socket: udp::UdpSocket<'a>,
 }
 
@@ -55,6 +55,14 @@ pub struct UnconnectedUdp<'a> {
     reason = "pub item is being prepared for embedded-nal-async-example where it will be reachable publicly"
 )]
 impl<'a> ConnectedUdp<'a> {
+    pub fn local(&self) -> &IpEndpoint {
+        &self.local
+    }
+
+    pub fn remote(&self) -> &IpEndpoint {
+        &self.remote
+    }
+
     /// Create a [`ConnectedUdp`] by assigning it a remote and a concrete local address
     ///
     /// ## Prerequisites
@@ -67,11 +75,11 @@ impl<'a> ConnectedUdp<'a> {
         remote: SocketAddr,
     ) -> Result<Self, Error> {
         // Workaround for https://github.com/smoltcp-rs/smoltcp/issues/1037
-        let bind_to = sockaddr_nal2smol(local)?;
-        if bind_to.addr.is_unspecified() {
-            socket.bind(bind_to.port)?;
+        let local_endpoint = sockaddr_nal2smol(local)?;
+        if local_endpoint.addr.is_unspecified() {
+            socket.bind(local_endpoint.port)?;
         } else {
-            socket.bind(bind_to)?;
+            socket.bind(local_endpoint)?;
         }
 
         Ok(ConnectedUdp {
@@ -79,7 +87,7 @@ impl<'a> ConnectedUdp<'a> {
             // FIXME: We could check if local was fully (or sufficiently, picking the port from the
             // socket) specified and store if yes -- for a first iteration, leaving that to the
             // fallback path we need anyway in case local is [::].
-            local: None,
+            local: local_endpoint,
             socket,
         })
     }
@@ -94,6 +102,18 @@ impl<'a> ConnectedUdp<'a> {
     pub async fn connect(socket: udp::UdpSocket<'a>, /*, ... */) -> Result<Self, udp::BindError> {
         // This is really just a copy of the provided `embedded_nal::udp::UdpStack::connect` method
         todo!("use {:p}", &socket)
+    }
+}
+
+impl nal::ConnectedUdp for ConnectedUdp<'_> {
+    type Error = Error;
+
+    async fn send(&mut self, data: &[u8]) -> Result<(), Self::Error> {
+        Ok(self.socket.send_to(data, self.remote).await?)
+    }
+
+    async fn receive_into(&mut self, buffer: &mut [u8]) -> Result<usize, Self::Error> {
+        Ok(self.socket.recv_from(buffer).await?.0)
     }
 }
 

@@ -13,7 +13,7 @@ use embassy_net::{
     udp::{PacketMetadata, UdpSocket},
     Ipv4Address,
 };
-use embedded_nal_async::UnconnectedUdp;
+use embedded_nal_async::{ConnectedUdp, UnconnectedUdp};
 
 #[ariel_os::task(autostart)]
 async fn embedded_nal_async_example() {
@@ -36,9 +36,18 @@ async fn embedded_nal_async_example() {
 
         info!("Listening on UDP:1234...");
         let local: SocketAddr = "10.42.0.61:1234".parse().unwrap();
+        let remote: SocketAddr = "10.42.0.1:1884".parse().unwrap();
         // let local = SocketAddr::V4(SocketAddrV4::new(Ipv4Address::new(10, 42, 0, 61), 1234));
-        let mut unconnected = match udp_nal::UnconnectedUdp::bind_multiple(socket, local).await {
-            Ok(unconnected_udp) => unconnected_udp,
+        // let mut unconnected = match udp_nal::UnconnectedUdp::bind_multiple(socket, local).await {
+        //     Ok(unconnected_udp) => unconnected_udp,
+        //     Err(_) => {
+        //         info!("bind error");
+        //         break;
+        //     }
+        // };
+
+        let mut connected = match udp_nal::ConnectedUdp::connect_from(socket, local, remote).await {
+            Ok(connected) => connected,
             Err(_) => {
                 info!("bind error");
                 break;
@@ -46,22 +55,26 @@ async fn embedded_nal_async_example() {
         };
 
         loop {
-            let (n, local, remote) = match unconnected.receive_into(&mut buf).await {
-                Ok((0, _, _)) => {
+            let n = match connected.receive_into(&mut buf).await {
+                Ok(0) => {
                     info!("read EOF");
                     break;
                 }
-                Ok((n, local, remote)) => (n, local, remote),
+                Ok(n) => n,
                 Err(_) => {
                     info!("receive error");
                     break;
                 }
             };
 
-            info!("Received datagram from {:?}", remote.ip());
+            info!(
+                "Received datagram from {:?}:{:?}",
+                connected.remote().addr,
+                connected.remote().port
+            );
             info!("Contents: {}", &buf[..n]);
 
-            match unconnected.send(local, remote, &buf[..n]).await {
+            match connected.send(&buf[..n]).await {
                 Ok(()) => {}
                 Err(_) => {
                     info!("write error");

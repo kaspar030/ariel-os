@@ -152,10 +152,10 @@ impl TryFrom<&[u8]> for Header {
 
     fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
         if value[0] == Self::LONG_FLAG {
-            println!("long header");
+            // println!("long header");
             Header::try_from(u32::from_be_bytes(value[..4].try_into().unwrap()))
         } else {
-            println!("short header");
+            // println!("short header");
             Header::try_from(u16::from_be_bytes(value[..2].try_into().unwrap()))
         }
     }
