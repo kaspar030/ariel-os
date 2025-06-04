@@ -1,5 +1,4 @@
-use ariel_os::debug::log::{defmt, info};
-use ariel_os::debug::println;
+use ariel_os::debug::log::*;
 use bilge::give_me_error;
 use bilge::prelude::*;
 

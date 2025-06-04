@@ -1,11 +1,10 @@
-use crate::header::{Header, MsgType};
-use crate::message_variable_part as mvp;
-use crate::packet::Error::{PacketNotRecognized, ParsingFailed};
-use ariel_os::debug::log::info;
-use bilge::{
-    arbitrary_int::{u24, u40, u48},
-    BitsError,
+use crate::mqtt_sn::{
+    header::{Header, MsgType},
+    message_variable_part as mvp,
+    packet::Error::{PacketNotRecognized, ParsingFailed},
 };
+use ariel_os::debug::log::*;
+use bilge::arbitrary_int::{u24, u40, u48};
 use core::str::from_utf8;
 
 #[derive(PartialEq)]

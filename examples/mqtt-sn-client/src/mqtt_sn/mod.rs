@@ -1,26 +1,22 @@
-use crate::message_variable_part::Publish;
-use crate::mqtt_sn::Error::ConversionFailed;
-use crate::{
-    flags::{Flags, QoS, TopicIdType},
-    header::{Header, HeaderLong, HeaderShort, MsgType},
-    message_variable_part as mvp,
-    mqtt_sn::Error::{InvalidState, Timeout, TransmissionFailed},
-    packet::Packet,
-    udp_nal,
-};
+use flags::{Flags, QoS, TopicIdType};
+use header::{Header, HeaderLong, HeaderShort, MsgType};
+use message_variable_part as mvp;
+use packet::Packet;
+use Error::{ConversionFailed, InvalidState, Timeout, TransmissionFailed};
+
+use crate::udp_nal;
 use ariel_os::{
-    debug::log::info,
+    debug::log::*,
     reexports::embassy_time::{Duration, WithTimeout},
 };
 use bilge::prelude::*;
 use core::net::SocketAddr;
 use embedded_nal_async::UnconnectedUdp;
 
-mod flags;
+pub(crate) mod flags;
 mod header;
 mod message_variable_part;
 mod packet;
-mod udp_nal;
 
 #[derive(PartialEq)]
 enum State {
@@ -70,7 +66,7 @@ impl<'a> MqttSn<'a> {
             .await
         {
             Ok(()) => {
-                info!("Message: {}", &self.send_buf[..length as usize]);
+                info!("Message: {:?}", &self.send_buf[..length as usize]);
                 info!("Sent to: {}", remote);
                 Ok(())
             }
@@ -95,7 +91,7 @@ impl<'a> MqttSn<'a> {
                     Ok(packet)
                 }
                 Err(_) => {
-                    info!("Conversion error for: {}", &self.recv_buf[..n]);
+                    info!("Conversion error for: {:?}", &self.recv_buf[..n]);
                     Err(ConversionFailed)
                 }
             },
@@ -171,8 +167,8 @@ impl<'a> MqttSn<'a> {
             .receive()
             .with_timeout(Duration::from_millis(duration_millis as u64))
             .await
-            .map_err(|_| Err(Timeout))?
-            .map(|res| res.get_msg_type())
+            .map_err(|_| Timeout)?
+            .map(|res| res.get_msg_type())?
         {
             MsgType::ConnAck => {
                 self.state = State::Awake;

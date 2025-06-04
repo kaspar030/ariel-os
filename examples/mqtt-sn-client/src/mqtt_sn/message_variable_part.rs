@@ -1,4 +1,4 @@
-use crate::flags::Flags;
+use crate::mqtt_sn::flags::Flags;
 use ariel_os::debug::log::defmt;
 use bilge::prelude::*;
 

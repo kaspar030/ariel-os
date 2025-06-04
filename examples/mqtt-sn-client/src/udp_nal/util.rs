@@ -14,11 +14,11 @@ use embassy_net::{udp, IpAddress, IpEndpoint};
     clippy::unnecessary_wraps,
     reason = "errors are currently only impossible because for crate feature synchronization reasons, all cfg handling is commented out"
 )]
-pub(super) fn sockaddr_nal2smol(sockaddr: SocketAddr) -> Result<IpEndpoint, Error> {
+pub(crate) fn sockaddr_nal2smol(sockaddr: SocketAddr) -> Result<IpEndpoint, Error> {
     Ok(IpEndpoint::from(sockaddr))
 }
 
-pub(super) fn sockaddr_smol2nal(endpoint: IpEndpoint) -> SocketAddr {
+pub(crate) fn sockaddr_smol2nal(endpoint: IpEndpoint) -> SocketAddr {
     match endpoint.addr {
         IpAddress::Ipv4(addr) => SocketAddr::V4(SocketAddrV4::new(addr, endpoint.port)),
         IpAddress::Ipv6(addr) => SocketAddr::V6(SocketAddrV6::new(addr, endpoint.port, 0, 0)),
@@ -28,7 +28,7 @@ pub(super) fn sockaddr_smol2nal(endpoint: IpEndpoint) -> SocketAddr {
 /// Is the IP address in this type the unspecified address?
 ///
 /// FIXME: What of `::ffff:0.0.0.0`? Is that expected to bind to all v4 addresses?
-pub(super) fn is_unspec_ip(addr: SocketAddr) -> bool {
+pub(crate) fn is_unspec_ip(addr: SocketAddr) -> bool {
     match addr {
         SocketAddr::V4(sockaddr) => sockaddr.ip().octets() == [0; 4],
         SocketAddr::V6(sockaddr) => sockaddr.ip().octets() == [0; 16],

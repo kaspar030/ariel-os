@@ -1,18 +1,19 @@
 #![no_main]
 #![no_std]
-#![feature(used_with_arg)]
-#![feature(impl_trait_in_assoc_type)]
-#![feature(let_chains)]
+// #![feature(used_with_arg)]
+// #![feature(impl_trait_in_assoc_type)]
+// #![feature(let_chains)]
 
 mod mqtt_sn;
+mod udp_nal;
 
-use crate::flags::{QoS, TopicIdType};
-use crate::mqtt_sn::MqttSn;
 use ariel_os::{debug::log::*, net};
-// use ariel_os_random as rng;
-use core::future::Future;
 use core::net::SocketAddr;
 use embassy_net::udp::{PacketMetadata, UdpSocket};
+use mqtt_sn::{
+    flags::{QoS, TopicIdType},
+    MqttSn,
+};
 use rand::Rng as _;
 
 #[ariel_os::task(autostart)]
