@@ -16,6 +16,12 @@ use bilge::prelude::*;
 use core::net::SocketAddr;
 use embedded_nal_async::UnconnectedUdp;
 
+mod flags;
+mod header;
+mod message_variable_part;
+mod packet;
+mod udp_nal;
+
 #[derive(PartialEq)]
 enum State {
     Disconnected,
@@ -187,8 +193,8 @@ impl<'a> MqttSn<'a> {
         let flags = Flags::new(topic_id_type, true, false, false, qos, dup);
         let msg_len = calculate_message_length(topic.len(), mvp::Subscribe::SIZE);
 
-        info!("msg_len: {}", &msg_len);
-        info!("msg_id: {}", &msg_id);
+        trace!("msg_len: {}", &msg_len);
+        trace!("msg_id: {}", &msg_id);
 
         let packet = Packet::Subscribe {
             header: Header::new(MsgType::Subscribe, msg_len),
@@ -210,7 +216,7 @@ impl<'a> MqttSn<'a> {
             Ok(res) => {
                 match res? {
                     Packet::SubAck { .. } => {
-                        info!("SubAck for topic: {}", topic);
+                        debug!("SubAck for topic: {}", topic);
                         self.state = State::Active;
                         Ok(())
                     }

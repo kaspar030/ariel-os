@@ -4,12 +4,7 @@
 #![feature(impl_trait_in_assoc_type)]
 #![feature(let_chains)]
 
-mod flags;
-mod header;
-mod message_variable_part;
 mod mqtt_sn;
-mod packet;
-mod udp_nal;
 
 use crate::flags::{QoS, TopicIdType};
 use crate::mqtt_sn::MqttSn;
