@@ -165,15 +165,14 @@ impl<'a> MqttSn<'a> {
             .receive()
             .with_timeout(Duration::from_millis(duration_millis as u64))
             .await
+            .map_err(|_| Err(Timeout))?
+            .map(|res| res.get_msg_type())
         {
-            Ok(res) => {
-                if res?.get_msg_type() != MsgType::ConnAck {
-                    return Err(TransmissionFailed);
-                }
+            MsgType::ConnAck => {
                 self.state = State::Awake;
                 Ok(())
             }
-            Err(_) => Err(Timeout),
+            _ => Err(TransmissionFailed),
         }
     }
 
