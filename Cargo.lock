@@ -403,6 +403,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "ariel-os-mqttsn"
+version = "0.1.0"
+dependencies = [
+ "arbitrary-int",
+ "ariel-os",
+ "ariel-os-embassy",
+ "bilge",
+ "embassy-futures",
+ "embassy-net",
+ "embassy-sync 0.6.2",
+ "embedded-io-async",
+ "embedded-nal-async",
+ "log",
+]
+
+[[package]]
 name = "ariel-os-nrf"
 version = "0.2.0"
 dependencies = [
@@ -3883,7 +3899,7 @@ dependencies = [
  "ariel-os",
  "ariel-os-boards",
  "ariel-os-embassy",
- "ariel-os-random",
+ "ariel-os-mqttsn",
  "bilge",
  "embassy-futures",
  "embassy-net",
@@ -3893,7 +3909,6 @@ dependencies = [
  "embedded-time",
  "heapless 0.8.0",
  "log",
- "rand",
 ]
 
 [[package]]

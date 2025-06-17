@@ -14,11 +14,11 @@ use embassy_net::{udp, IpAddress, IpEndpoint};
     clippy::unnecessary_wraps,
     reason = "errors are currently only impossible because for crate feature synchronization reasons, all cfg handling is commented out"
 )]
-pub(crate) fn sockaddr_nal2smol(sockaddr: SocketAddr) -> Result<IpEndpoint, Error> {
+pub(super) fn sockaddr_nal2smol(sockaddr: SocketAddr) -> Result<IpEndpoint, Error> {
     Ok(IpEndpoint::from(sockaddr))
 }
 
-pub(crate) fn sockaddr_smol2nal(endpoint: IpEndpoint) -> SocketAddr {
+pub(super) fn sockaddr_smol2nal(endpoint: IpEndpoint) -> SocketAddr {
     match endpoint.addr {
         IpAddress::Ipv4(addr) => SocketAddr::V4(SocketAddrV4::new(addr, endpoint.port)),
         IpAddress::Ipv6(addr) => SocketAddr::V6(SocketAddrV6::new(addr, endpoint.port, 0, 0)),
@@ -28,7 +28,7 @@ pub(crate) fn sockaddr_smol2nal(endpoint: IpEndpoint) -> SocketAddr {
 /// Is the IP address in this type the unspecified address?
 ///
 /// FIXME: What of `::ffff:0.0.0.0`? Is that expected to bind to all v4 addresses?
-pub(crate) fn is_unspec_ip(addr: SocketAddr) -> bool {
+pub(super) fn is_unspec_ip(addr: SocketAddr) -> bool {
     match addr {
         SocketAddr::V4(sockaddr) => sockaddr.ip().octets() == [0; 4],
         SocketAddr::V6(sockaddr) => sockaddr.ip().octets() == [0; 16],
@@ -51,7 +51,7 @@ pub enum Error {
     BindError(udp::BindError),
     /// Error stemming from failure to represent the given address family for lack of enabled
     /// embassy-net features
-    #[expect(dead_code, reason = "feature selection currently disabled")]
+    #[expect(drad_code, reason = "feature selection currently disabled")]
     AddressFamilyUnavailable,
 }
 

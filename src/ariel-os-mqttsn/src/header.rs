@@ -137,7 +137,7 @@ impl TryFrom<u32> for Header {
 
     fn try_from(value: u32) -> Result<Self, Self::Error> {
         if value.to_be_bytes()[0] != 1 {
-            return Err(give_me_error());
+            return Err(give_me_error()); //todo Error conversion
         }
         match HeaderLong::try_from(value) {
             Ok(header) => Ok(Self::Long(header)),
@@ -147,14 +147,12 @@ impl TryFrom<u32> for Header {
 }
 
 impl TryFrom<&[u8]> for Header {
-    type Error = bilge::BitsError;
+    type Error = bilge::BitsError; //todo Error conversion
 
     fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
         if value[0] == Self::LONG_FLAG {
-            // println!("long header");
             Header::try_from(u32::from_be_bytes(value[..4].try_into().unwrap()))
         } else {
-            // println!("short header");
             Header::try_from(u16::from_be_bytes(value[..2].try_into().unwrap()))
         }
     }

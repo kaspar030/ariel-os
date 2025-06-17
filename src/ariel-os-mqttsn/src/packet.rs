@@ -1,11 +1,10 @@
-use crate::mqtt_sn::{
+use crate::{
     header::{Header, MsgType},
     message_variable_part as mvp,
     packet::Error::{PacketNotRecognized, ParsingFailed},
 };
 use ariel_os::debug::log::*;
 use bilge::arbitrary_int::{u24, u40, u48};
-use core::str::from_utf8;
 
 #[derive(PartialEq)]
 pub enum Packet<'a> {
@@ -15,7 +14,7 @@ pub enum Packet<'a> {
     Connect {
         header: Header,
         connect: mvp::Connect,
-        client_id: &'a str,
+        client_id: &'a [u8],
     },
     ConnAck {
         header: Header,
@@ -24,12 +23,12 @@ pub enum Packet<'a> {
     Publish {
         header: Header,
         publish: mvp::Publish,
-        data: &'a str,
+        data: &'a [u8],
     },
     Subscribe {
         header: Header,
         subscribe: mvp::Subscribe,
-        topic: &'a str, // long name, short name, id
+        topic: &'a [u8], // long name, short name, id
     },
     SubAck {
         header: Header,
@@ -54,7 +53,7 @@ macro_rules! construct_buffer {
 
         let mvp_size = $header.size() + $mvp_len;
 
-        $buf[mvp_size..$header.length()].copy_from_slice($payload.as_bytes());
+        $buf[mvp_size..$header.length()].copy_from_slice($payload);
     };
 }
 
@@ -101,11 +100,6 @@ impl Packet<'_> {
             MsgType::Publish => {
                 let mvp_size = header.size() + mvp::Publish::SIZE;
 
-                let data: &str = match from_utf8(&bytes[mvp_size..]) {
-                    Ok(it) => it,
-                    Err(_) => return Err(ParsingFailed),
-                };
-
                 let mvp: [u8; mvp::Publish::SIZE] = match bytes[header.size()..mvp_size].try_into()
                 {
                     Ok(it) => it,
@@ -120,7 +114,7 @@ impl Packet<'_> {
                 Ok(Packet::Publish {
                     header,
                     publish,
-                    data,
+                    data: &bytes[mvp_size..],
                 })
             }
             // MsgType::PubAck => {}
@@ -130,8 +124,6 @@ impl Packet<'_> {
             MsgType::Subscribe => {
                 let mvp_size = header.size() + mvp::Subscribe::SIZE;
 
-                let topic: &str = from_utf8(&bytes[mvp::Subscribe::SIZE..]).unwrap();
-
                 let mvp: [u8; mvp::Subscribe::SIZE] =
                     bytes[header.size()..mvp_size].try_into().unwrap();
 
@@ -140,7 +132,7 @@ impl Packet<'_> {
                 Ok(Packet::Subscribe {
                     header,
                     subscribe,
-                    topic,
+                    topic: &bytes[mvp::Subscribe::SIZE..],
                 })
             }
             MsgType::SubAck => {

@@ -1,4 +1,4 @@
-use crate::mqtt_sn::flags::Flags;
+use crate::flags::Flags;
 use ariel_os::debug::log::defmt;
 use bilge::prelude::*;
 
@@ -148,6 +148,10 @@ pub struct SubAck {
 
 impl SubAck {
     pub const SIZE: usize = 6;
+
+    pub fn get_topic_id(&self) -> u16 {
+        self.topic_id()
+    }
 }
 
 #[bitsize(40)]
