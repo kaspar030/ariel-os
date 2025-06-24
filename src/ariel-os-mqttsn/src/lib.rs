@@ -2,8 +2,9 @@
 use flags::{Flags, QoS, TopicIdType};
 use header::{Header, HeaderLong, HeaderShort, MsgType};
 use message_variable_part as mvp;
+use mvp::ReturnCode;
 use packet::Packet;
-use Error::{ConversionFailed, InvalidState, Timeout, TransmissionFailed};
+use Error::*;
 
 use ariel_os::{
     debug::log::*,
@@ -26,22 +27,24 @@ enum State {
     Disconnected,
     Active,
     Asleep,
+    #[expect(dead_code, reason = "state not yet implemented")]
     Awake,
+    #[expect(dead_code, reason = "state not yet implemented")]
     Lost,
 }
 
 pub enum Topic<'a> {
-    Id(&'a u16),
-    ShortName(&'a [u8; 2]),
+    Id(u16),
+    ShortName([u8; 2]),
     LongName(&'a [u8]),
 }
 
 impl<'a> Topic<'a> {
-    pub fn from_short(short_name: &'a [u8; 2]) -> Topic<'a> {
+    pub fn from_short(short_name: [u8; 2]) -> Topic<'a> {
         Self::ShortName(short_name)
     }
 
-    pub fn from_id(id: &'a u16) -> Topic<'a> {
+    pub fn from_id(id: u16) -> Topic<'a> {
         Self::Id(id)
     }
 
@@ -65,6 +68,7 @@ pub struct MqttSn<'a> {
     remote: SocketAddr,
     send_buf: [u8; UDP_PAYLOAD_SIZE],
     recv_buf: [u8; UDP_PAYLOAD_SIZE],
+    msg_id: u16,
 }
 
 impl<'a> MqttSn<'a> {
@@ -76,23 +80,19 @@ impl<'a> MqttSn<'a> {
             remote,
             send_buf: [0u8; UDP_PAYLOAD_SIZE],
             recv_buf: [0u8; UDP_PAYLOAD_SIZE],
+            msg_id: 0,
         }
     }
 
-    async fn send(
-        &mut self,
-        length: u16,
-        local: SocketAddr,
-        remote: SocketAddr,
-    ) -> Result<(), Error> {
+    async fn send(&mut self, length: u16) -> Result<(), Error> {
         match self
             .socket
-            .send(local, remote, &self.send_buf[..length as usize])
+            .send(self.local, self.remote, &self.send_buf[..length as usize])
             .await
         {
             Ok(()) => {
                 info!("Message: {:?}", &self.send_buf[..length as usize]);
-                info!("Sent to: {}", remote);
+                info!("Sent to: {}", self.remote);
                 Ok(())
             }
             Err(_) => {
@@ -108,7 +108,10 @@ impl<'a> MqttSn<'a> {
                 Ok(packet) => {
                     info!("received: {:?}", packet.get_msg_type());
                     match &packet {
-                        Packet::ConnAck { header, conn_ack } => {
+                        Packet::ConnAck {
+                            header: _,
+                            conn_ack,
+                        } => {
                             info!("{:?}", conn_ack);
                         }
                         _ => {}
@@ -127,22 +130,17 @@ impl<'a> MqttSn<'a> {
         }
     }
 
-    pub async fn publish_minus_one(
-        &mut self,
-        payload: &[u8],
-        local: SocketAddr,
-        remote: SocketAddr,
-    ) -> Result<(), Error> {
+    pub async fn publish_minus_one(&mut self, payload: &[u8]) -> Result<(), Error> {
         let flags = Flags::new(
             TopicIdType::IdPredefined,
             false,
             false,
             false,
-            QoS::Zero,
+            QoS::MinusOne,
             false,
         );
 
-        let length = calculate_message_length(payload.len(), mvp::Publish::BITS / 8);
+        let length = calculate_message_length(payload.len(), mvp::Publish::SIZE);
 
         let packet = Packet::Publish {
             header: Header::new(MsgType::Publish, length),
@@ -152,7 +150,7 @@ impl<'a> MqttSn<'a> {
 
         packet.write_to_buf(&mut self.send_buf);
 
-        self.send(length, local, remote).await
+        self.send(length).await
     }
 
     pub async fn connect(
@@ -186,7 +184,7 @@ impl<'a> MqttSn<'a> {
 
         packet.write_to_buf(&mut self.send_buf);
 
-        self.send(msg_len, self.local, self.remote).await?;
+        self.send(msg_len).await?;
 
         match self
             .receive()
@@ -196,7 +194,7 @@ impl<'a> MqttSn<'a> {
             .map(|res| res.get_msg_type())?
         {
             MsgType::ConnAck => {
-                self.state = State::Awake;
+                self.state = State::Active;
                 Ok(())
             }
             _ => Err(TransmissionFailed),
@@ -206,42 +204,36 @@ impl<'a> MqttSn<'a> {
     pub async fn subscribe(
         &mut self,
         topic: Topic<'_>,
-        msg_id: u16,
         dup: bool,
         qos: QoS,
-    ) -> Result<(), Error> {
-        let topic_id_type;
-        let topic_value: &[u8] = match topic {
-            Topic::ShortName(name) => {
-                topic_id_type = TopicIdType::ShortName;
-                name
-            }
-            Topic::Id(id) => {
-                topic_id_type = TopicIdType::IdPredefined;
-                &id.to_be_bytes()
-            }
-            Topic::LongName(name) => {
-                topic_id_type = TopicIdType::IdNormal;
-                name
-            }
+    ) -> Result<Topic, Error> {
+        if self.state != State::Active {
+            return Err(InvalidState);
+        }
+
+        let (topic_id_type, topic_value) = match &topic {
+            Topic::ShortName(name) => (TopicIdType::ShortName, &name[..]),
+            Topic::Id(id) => (TopicIdType::IdPredefined, &id.to_be_bytes()[..]),
+            Topic::LongName(name) => (TopicIdType::IdNormal, &name[..]),
         };
 
         let flags = Flags::new(topic_id_type, true, false, false, qos, dup);
         let msg_len = calculate_message_length(topic.len(), mvp::Subscribe::SIZE);
 
         trace!("msg_len: {}", &msg_len);
-        trace!("msg_id: {}", &msg_id);
 
         let packet = Packet::Subscribe {
             header: Header::new(MsgType::Subscribe, msg_len),
-            subscribe: mvp::Subscribe::new(msg_id, flags),
+            subscribe: mvp::Subscribe::new(self.msg_id, flags),
             topic: topic_value,
         };
+
+        self.msg_id += 1;
 
         info!("write buf");
         packet.write_to_buf(&mut self.send_buf);
         info!("send start");
-        self.send(msg_len, self.local, self.remote).await?;
+        self.send(msg_len).await?;
         info!("send complete");
 
         match self
@@ -249,22 +241,18 @@ impl<'a> MqttSn<'a> {
             .with_timeout(Duration::from_millis(60000))
             .await
         {
-            Ok(res) => {
-                match res? {
-                    Packet::SubAck { header, sub_ack } => {
-                        let topic_id = sub_ack.get_topic_id();
-                        info!(
-                            "received Topic Id {:?} for topic {}",
-                            topic_id,
-                            from_utf8(topic_value).unwrap()
-                        );
-                        self.state = State::Active;
-                        // Ok(Topic::from_id(topic_id))
-                        Ok(())
-                    }
-                    _ => Err(TransmissionFailed),
+            Ok(res) => match res? {
+                Packet::SubAck { header: _, sub_ack } => {
+                    let topic_id = sub_ack.get_topic_id();
+                    info!(
+                        "received Topic Id {:?} for Topic {}",
+                        topic_id,
+                        from_utf8(topic_value).unwrap()
+                    );
+                    Ok(Topic::from_id(topic_id))
                 }
-            }
+                _ => Err(TransmissionFailed),
+            },
             Err(_) => Err(Timeout),
         }
     }
@@ -273,8 +261,8 @@ impl<'a> MqttSn<'a> {
         match self.receive().await {
             Ok(res) => match res {
                 Packet::Publish {
-                    header,
-                    publish,
+                    header: _,
+                    publish: _,
                     data,
                 } => Some(data),
                 _ => None,
@@ -304,17 +292,77 @@ impl<'a> MqttSn<'a> {
         Ok(())
     }
 
-    // fn register(&mut self, name: &str) -> Result<Topic, MqttsnError> {
-    //     // ...
-    //     let topic_id = self... ..register(&str).await?;
-    //
-    //     Topic::Id(topic_id)
-    // }
+    async fn register(&mut self, topic: &[u8]) -> Result<Topic, Error> {
+        if self.state != State::Active {
+            return Err(InvalidState);
+        }
 
-    // fn subscribe(&mut self) -> Topic {
-    //     let topic_id = self... ..subscrfibe(&str);
-    //     Topic::Id(topic_id)
-    // }
+        let msg_len = calculate_message_length(topic.len(), mvp::Register::SIZE);
+
+        let packet = Packet::Register {
+            header: Header::new(MsgType::Register, msg_len),
+            register: mvp::Register::new(0x0000, self.msg_id),
+            topic,
+        };
+
+        self.msg_id += 1;
+
+        packet.write_to_buf(&mut self.send_buf);
+        self.send(msg_len).await?;
+
+        match self
+            .receive()
+            .with_timeout(Duration::from_millis(60000))
+            .await
+        {
+            Ok(res) => match res? {
+                Packet::RegAck { header: _, reg_ack } => {
+                    let return_code = reg_ack.get_return_code();
+                    if return_code != ReturnCode::Accepted {
+                        error!("{:?}", return_code);
+                        return Err(Rejected);
+                    }
+                    let topic_id = reg_ack.get_topic_id();
+                    info!(
+                        "received Topic Id {:?} for Topic {}",
+                        topic_id,
+                        from_utf8(topic).unwrap()
+                    );
+                    return Ok(Topic::from_id(topic_id));
+                }
+                _ => Err(TransmissionFailed),
+            },
+            Err(_) => Err(Timeout),
+        }
+    }
+
+    async fn publish(&mut self, topic: Topic<'_>, payload: &[u8]) -> Result<(), Error> {
+        if self.state != State::Active {
+            return Err(InvalidState);
+        }
+
+        let (topic_id_type, topic_value) = match &topic {
+            Topic::ShortName(name) => (TopicIdType::ShortName, &u16::from_be_bytes(*name)),
+            Topic::Id(id) => (TopicIdType::IdPredefined, id),
+            Topic::LongName(name) => return Err(InvalidIdType),
+        };
+
+        let flags = Flags::new(topic_id_type, false, false, false, QoS::Zero, false);
+
+        let length = calculate_message_length(payload.len(), mvp::Publish::SIZE);
+
+        let packet = Packet::Publish {
+            header: Header::new(MsgType::Publish, length),
+            publish: mvp::Publish::new(self.msg_id, *topic_value, flags),
+            data: payload,
+        };
+
+        self.msg_id += 1;
+
+        packet.write_to_buf(&mut self.send_buf);
+
+        self.send(length).await
+    }
 }
 
 #[derive(Debug)]
@@ -323,6 +371,8 @@ pub enum Error {
     Timeout,
     TransmissionFailed,
     ConversionFailed,
+    Rejected,
+    InvalidIdType,
 }
 
 fn calculate_message_length(payload_len: usize, mvp_byte_len: usize) -> u16 {

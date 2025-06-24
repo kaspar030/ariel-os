@@ -4,7 +4,7 @@ use bilge::prelude::*;
 
 #[bitsize(8)]
 #[derive(TryFromBits, Debug, PartialEq, defmt::Format)]
-enum ReturnCode {
+pub enum ReturnCode {
     Accepted = 0x00,
     RejectedCongestion = 0x01,
     RejectedInvalidTopicId = 0x02,
@@ -32,11 +32,11 @@ impl SearchGw {
     }
 }
 
-pub struct GwInfo {
-    /// address of the indicated GW; optional
-    gw_add: usize,
-    gw_id: u8,
-}
+// pub struct GwInfo {
+//     /// address of the indicated GW; optional
+//     gw_add: usize,
+//     gw_id: u8,
+// }
 
 #[bitsize(32)]
 #[derive(TryFromBits, DebugBits, PartialEq)]
@@ -63,23 +63,32 @@ impl ConnAck {
     pub const SIZE: usize = 1;
 }
 
-pub struct WillTopicReq {}
+// pub struct WillTopicReq {}
+//
+// pub struct WillTopic {
+//     will_topic: u8,
+//     flags: Flags,
+// }
+//
+// pub struct WillMsgReq {}
+//
+// pub struct WillMsg {
+//     will_msg: u8,
+// }
 
-pub struct WillTopic {
-    will_topic: u8,
-    flags: Flags,
-}
-
-pub struct WillMsgReq {}
-
-pub struct WillMsg {
-    will_msg: u8,
-}
-
+#[bitsize(32)]
+#[derive(TryFromBits, DebugBits, PartialEq)]
 pub struct Register {
-    topic_name: u8,
     msg_id: u16,
     topic_id: u16,
+}
+
+impl Register {
+    pub const SIZE: usize = 4;
+
+    pub fn to_be_bytes(&self) -> [u8; Self::SIZE] {
+        self.value.to_be_bytes()
+    }
 }
 
 #[bitsize(40)]
@@ -88,6 +97,18 @@ pub struct RegAck {
     return_code: ReturnCode,
     msg_id: u16,
     topic_id: u16,
+}
+
+impl RegAck {
+    pub const SIZE: usize = 5;
+
+    pub fn get_topic_id(&self) -> u16 {
+        self.topic_id()
+    }
+
+    pub fn get_return_code(&self) -> ReturnCode {
+        self.return_code()
+    }
 }
 
 #[bitsize(40)]
@@ -152,6 +173,10 @@ impl SubAck {
     pub fn get_topic_id(&self) -> u16 {
         self.topic_id()
     }
+
+    pub fn get_return_code(&self) -> ReturnCode {
+        self.return_code()
+    }
 }
 
 #[bitsize(40)]
@@ -168,11 +193,11 @@ pub struct UnsubAck {
     msg_id: u16,
 }
 
-pub struct PingReq {
-    client_id: u8, // optional
-}
-
-pub struct PingResp {}
+// pub struct PingReq {
+//     client_id: u8, // optional
+// }
+//
+// pub struct PingResp {}
 
 #[bitsize(16)]
 #[derive(TryFromBits, DebugBits, PartialEq)]
@@ -180,14 +205,14 @@ pub struct Disconnect {
     duration: u16, // optional
 }
 
-pub struct WillTopicUpd {
-    will_topic: u8,
-    flags: Flags,
-}
-
-pub struct WillMsgUpd {
-    will_msg: u8,
-}
+// pub struct WillTopicUpd {
+//     will_topic: u8,
+//     flags: Flags,
+// }
+//
+// pub struct WillMsgUpd {
+//     will_msg: u8,
+// }
 
 #[bitsize(8)]
 #[derive(TryFromBits, DebugBits, PartialEq)]
@@ -201,7 +226,7 @@ pub struct WillMsgcResp {
     return_code: ReturnCode,
 }
 
-pub struct ForwarderEncapsulation {}
+// pub struct ForwarderEncapsulation {}
 
 // fn try_from(msg_type: MsgType, bytes: &[u8]) -> (MessageVariablePart, &[u8]) {
 //     match msg_type {

@@ -86,16 +86,16 @@ impl Header {
         }
     }
 
-    pub fn length_mvp(&self) -> usize {
-        match self {
-            Header::Short(header_short) => header_short.length() as usize - 2,
-            Header::Long(header_long) => header_long.length().as_usize() - 4,
-        }
-    }
-
-    pub fn is_long(&self) -> bool {
-        matches!(self, Self::Long(_))
-    }
+    // pub fn length_mvp(&self) -> usize {
+    //     match self {
+    //         Header::Short(header_short) => header_short.length() as usize - 2,
+    //         Header::Long(header_long) => header_long.length().as_usize() - 4,
+    //     }
+    // }
+    //
+    // pub fn is_long(&self) -> bool {
+    //     matches!(self, Self::Long(_))
+    // }
 
     pub fn size(&self) -> usize {
         match self {

@@ -2,10 +2,7 @@
 #![no_std]
 
 use ariel_os::{debug::log::*, net};
-use ariel_os_mqttsn::{
-    flags::{QoS, TopicIdType},
-    udp_nal, MqttSn, Topic,
-};
+use ariel_os_mqttsn::{flags::QoS, udp_nal, MqttSn, Topic};
 use core::net::SocketAddr;
 use embassy_net::udp::{PacketMetadata, UdpSocket};
 
@@ -21,7 +18,7 @@ async fn mqtt_sn_client() {
     let mut tx_buffer = [0; 4096];
 
     loop {
-        let mut socket = UdpSocket::new(
+        let socket = UdpSocket::new(
             stack,
             &mut rx_meta,
             &mut rx_buffer,
@@ -66,7 +63,7 @@ async fn mqtt_sn_client() {
         info!("subscribing...");
 
         mqtt_sn
-            .subscribe(Topic::from_long(b"LOOONG"), 1u16, false, QoS::Zero)
+            .subscribe(Topic::from_long(b"LOOONG"), false, QoS::Zero)
             .await
             .unwrap();
 

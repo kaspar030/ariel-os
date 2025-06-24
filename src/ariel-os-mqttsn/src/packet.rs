@@ -20,6 +20,15 @@ pub enum Packet<'a> {
         header: Header,
         conn_ack: mvp::ConnAck,
     },
+    Register {
+        header: Header,
+        register: mvp::Register,
+        topic: &'a [u8],
+    },
+    RegAck {
+        header: Header,
+        reg_ack: mvp::RegAck,
+    },
     Publish {
         header: Header,
         publish: mvp::Publish,
@@ -96,7 +105,21 @@ impl Packet<'_> {
             // MsgType::WillMsgReq => {}
             // MsgType::WillMsg => {}
             // MsgType::Register => {}
-            // MsgType::RegAck => {}
+            MsgType::RegAck => {
+                let mvp_size = header.size() + mvp::RegAck::SIZE;
+
+                let mvp: [u8; mvp::RegAck::SIZE] = match bytes[header.size()..mvp_size].try_into() {
+                    Ok(it) => it,
+                    Err(_) => return Err(ParsingFailed),
+                };
+
+                let reg_ack = match mvp::RegAck::try_from(u40::from_be_bytes(mvp)) {
+                    Ok(it) => it,
+                    Err(_) => return Err(ParsingFailed),
+                };
+
+                Ok(Packet::RegAck { header, reg_ack })
+            }
             MsgType::Publish => {
                 let mvp_size = header.size() + mvp::Publish::SIZE;
 
@@ -184,7 +207,13 @@ impl Packet<'_> {
             // MsgType::WillTopic => {}
             // MsgType::WillMsgReq => {}
             // MsgType::WillMsg => {}
-            // MsgType::Register => {}
+            Packet::Register {
+                header,
+                register,
+                topic,
+            } => {
+                construct_buffer!(buf, header, register, mvp::Register::SIZE, topic);
+            }
             // MsgType::RegAck => {}
             Packet::Publish {
                 header,
@@ -225,6 +254,8 @@ impl Packet<'_> {
         match self {
             Packet::Connect { header, .. } => header.msg_type(),
             Packet::ConnAck { header, .. } => header.msg_type(),
+            Packet::Register { header, .. } => header.msg_type(),
+            Packet::RegAck { header, .. } => header.msg_type(),
             Packet::Publish { header, .. } => header.msg_type(),
             Packet::Subscribe { header, .. } => header.msg_type(),
             Packet::SearchGw { header, .. } => header.msg_type(),

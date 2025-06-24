@@ -51,7 +51,7 @@ pub enum Error {
     BindError(udp::BindError),
     /// Error stemming from failure to represent the given address family for lack of enabled
     /// embassy-net features
-    #[expect(drad_code, reason = "feature selection currently disabled")]
+    // #[expect(dead_code, reason = "feature selection currently disabled")]
     AddressFamilyUnavailable,
 }
 
