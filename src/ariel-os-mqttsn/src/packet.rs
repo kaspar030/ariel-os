@@ -43,11 +43,11 @@ pub enum Packet<'a> {
         header: Header,
         sub_ack: mvp::SubAck,
     },
-    SearchGw {
-        // delay sending randomly
-        header: Header,
-        search_gw: mvp::SearchGw,
-    },
+    // SearchGw {
+    //     // delay sending randomly
+    //     header: Header,
+    //     search_gw: mvp::SearchGw,
+    // },
 }
 
 macro_rules! construct_buffer {
@@ -188,9 +188,9 @@ impl Packet<'_> {
     pub fn write_to_buf(&self, buf: &mut [u8]) {
         match self {
             // MsgType::Advertise => {}
-            Packet::SearchGw { header, search_gw } => {
-                construct_buffer!(buf, header, search_gw, mvp::SearchGw::SIZE);
-            }
+            // Packet::SearchGw { header, search_gw } => {
+            //     construct_buffer!(buf, header, search_gw, mvp::SearchGw::SIZE);
+            // }
             // MsgType::GwInfo => {}
             Packet::Connect {
                 header,
@@ -258,7 +258,7 @@ impl Packet<'_> {
             Packet::RegAck { header, .. } => header.msg_type(),
             Packet::Publish { header, .. } => header.msg_type(),
             Packet::Subscribe { header, .. } => header.msg_type(),
-            Packet::SearchGw { header, .. } => header.msg_type(),
+            // Packet::SearchGw { header, .. } => header.msg_type(),
             Packet::SubAck { header, .. } => header.msg_type(),
         }
     }

@@ -33,6 +33,7 @@ enum State {
     Lost,
 }
 
+#[derive(Debug, defmt::Format)]
 pub enum Topic<'a> {
     Id(u16),
     ShortName([u8; 2]),
@@ -103,6 +104,7 @@ impl<'a> MqttSn<'a> {
     }
 
     async fn receive(&mut self) -> Result<Packet, Error> {
+        info!("Receiving...");
         match self.socket.receive_into(&mut self.recv_buf).await {
             Ok((n, _, _)) => match Packet::try_from(&self.recv_buf[..n]) {
                 Ok(packet) => {
@@ -178,7 +180,7 @@ impl<'a> MqttSn<'a> {
 
         let packet = Packet::Connect {
             header: Header::new(MsgType::Connect, msg_len),
-            connect: mvp::Connect::new(duration_millis, 0x01, flags),
+            connect: mvp::Connect::new(0x00, 0x01, flags),
             client_id,
         };
 
@@ -292,7 +294,7 @@ impl<'a> MqttSn<'a> {
         Ok(())
     }
 
-    async fn register(&mut self, topic: &[u8]) -> Result<Topic, Error> {
+    pub async fn register<'b>(&mut self, topic: &'b [u8]) -> Result<Topic<'b>, Error> {
         if self.state != State::Active {
             return Err(InvalidState);
         }
@@ -336,15 +338,15 @@ impl<'a> MqttSn<'a> {
         }
     }
 
-    async fn publish(&mut self, topic: Topic<'_>, payload: &[u8]) -> Result<(), Error> {
+    pub async fn publish(&mut self, topic: &Topic<'_>, payload: &[u8]) -> Result<(), Error> {
         if self.state != State::Active {
             return Err(InvalidState);
         }
 
-        let (topic_id_type, topic_value) = match &topic {
+        let (topic_id_type, topic_value) = match topic {
             Topic::ShortName(name) => (TopicIdType::ShortName, &u16::from_be_bytes(*name)),
             Topic::Id(id) => (TopicIdType::IdPredefined, id),
-            Topic::LongName(name) => return Err(InvalidIdType),
+            Topic::LongName(_) => return Err(InvalidIdType),
         };
 
         let flags = Flags::new(topic_id_type, false, false, false, QoS::Zero, false);
@@ -353,11 +355,11 @@ impl<'a> MqttSn<'a> {
 
         let packet = Packet::Publish {
             header: Header::new(MsgType::Publish, length),
-            publish: mvp::Publish::new(self.msg_id, *topic_value, flags),
+            publish: mvp::Publish::new(0x0000u16, *topic_value, flags), // msg_id 0x0000 on QoS 0 & -1
             data: payload,
         };
 
-        self.msg_id += 1;
+        // self.msg_id += 1;
 
         packet.write_to_buf(&mut self.send_buf);
 

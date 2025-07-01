@@ -3892,6 +3892,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
 
 [[package]]
+name = "mqtt-sn-button"
+version = "0.0.0"
+dependencies = [
+ "arbitrary-int",
+ "ariel-os",
+ "ariel-os-boards",
+ "ariel-os-embassy",
+ "ariel-os-mqttsn",
+ "bilge",
+ "embassy-futures",
+ "embassy-net",
+ "embassy-sync 0.6.2",
+ "embedded-io-async",
+ "embedded-nal-async",
+ "embedded-time",
+ "heapless 0.8.0",
+ "log",
+]
+
+[[package]]
 name = "mqtt-sn-client"
 version = "0.0.0"
 dependencies = [
@@ -3923,6 +3943,26 @@ dependencies = [
  "embassy-sync 0.6.2",
  "embedded-io-async",
  "embedded-nal-async",
+ "log",
+]
+
+[[package]]
+name = "mqtt-sn-light"
+version = "0.0.0"
+dependencies = [
+ "arbitrary-int",
+ "ariel-os",
+ "ariel-os-boards",
+ "ariel-os-embassy",
+ "ariel-os-mqttsn",
+ "bilge",
+ "embassy-futures",
+ "embassy-net",
+ "embassy-sync 0.6.2",
+ "embedded-io-async",
+ "embedded-nal-async",
+ "embedded-time",
+ "heapless 0.8.0",
  "log",
 ]
 

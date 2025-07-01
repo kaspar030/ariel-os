@@ -1,0 +1,9 @@
+apps:
+  - name: mqtt-sn-light
+    env:
+      global:
+        CARGO_ENV:
+          - CONFIG_ISR_STACKSIZE=16384
+    selects:
+      - network
+#      - embedded-test

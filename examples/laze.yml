@@ -37,3 +37,5 @@ subdirs:
   - embedded-nal-async-example
   - mqtt-sn-example
   - mqtt-sn-client
+  - mqtt-sn-button
+  - mqtt-sn-light
