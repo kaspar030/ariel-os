@@ -616,7 +616,7 @@ pub unsafe fn create_raw(
     prio: u8,
     core_affinity: Option<CoreAffinity>,
 ) -> ThreadId {
-    SCHEDULER.with_mut(|mut scheduler| {
+    SCHEDULER.with(|scheduler| {
         let thread_id = scheduler
             .create(func, arg, stack, RunqueueId::new(prio), core_affinity)
             .expect("Max `THREAD_COUNT` concurrent threads should be created.");
@@ -661,7 +661,7 @@ pub fn is_valid_tid(thread_id: ThreadId) -> bool {
 /// Panics if this is called outside of a thread context.
 #[allow(unused)]
 fn cleanup() -> ! {
-    SCHEDULER.with_mut(|mut scheduler| {
+    SCHEDULER.with(|scheduler| {
         let thread_id = scheduler.current_tid().unwrap();
         scheduler.set_state(thread_id, ThreadState::Invalid);
     });
@@ -671,7 +671,7 @@ fn cleanup() -> ! {
 
 /// "Yields" to another thread with the same priority.
 pub fn yield_same() {
-    SCHEDULER.with_mut(|mut scheduler| {
+    SCHEDULER.with(|scheduler| {
         let Some(&mut Thread {
             prio,
             tid: _tid,
@@ -711,7 +711,7 @@ pub fn yield_same() {
 /// Suspends/ pauses the current thread's execution.
 #[doc(alias = "sleep")]
 pub fn park() {
-    SCHEDULER.with_mut(|mut scheduler| {
+    SCHEDULER.with(|scheduler| {
         let Some(tid) = scheduler.current_tid() else {
             return;
         };
@@ -724,7 +724,7 @@ pub fn park() {
 /// Returns `false` if no parked thread exists for `thread_id`.
 #[doc(alias = "wakeup")]
 pub fn unpark(thread_id: ThreadId) -> bool {
-    SCHEDULER.with_mut(|mut scheduler| {
+    SCHEDULER.with(|scheduler| {
         match scheduler.get_state(thread_id) {
             Some(ThreadState::Parked) => {}
             _ => return false,
@@ -738,19 +738,19 @@ pub fn unpark(thread_id: ThreadId) -> bool {
 ///
 /// Returns `None` if this is not a valid thread.
 pub fn get_priority(thread_id: ThreadId) -> Option<RunqueueId> {
-    SCHEDULER.with_mut(|scheduler| scheduler.get_priority(thread_id))
+    SCHEDULER.with(|scheduler| scheduler.get_priority(thread_id))
 }
 
 /// Changes the priority of a thread.
 ///
 /// This might trigger a context switch.
 pub fn set_priority(thread_id: ThreadId, prio: RunqueueId) {
-    SCHEDULER.with_mut(|mut scheduler| scheduler.set_priority(thread_id, prio));
+    SCHEDULER.with(|scheduler| scheduler.set_priority(thread_id, prio));
 }
 
 /// Returns the current thread's stack limits (lowest, highest).
 pub fn current_stack_limits() -> Option<(usize, usize)> {
-    SCHEDULER.with_mut(|mut scheduler| {
+    SCHEDULER.with(|scheduler| {
         scheduler
             .current()
             .map(|thread| (thread.stack_lowest, thread.stack_highest))

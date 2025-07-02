@@ -23,7 +23,7 @@ impl ThreadList {
     ///
     /// Panics if this is called outside of a thread context.
     pub fn put_current(&mut self, cs: CriticalSection, state: ThreadState) -> Option<RunqueueId> {
-        SCHEDULER.with_mut_cs(cs, |mut scheduler| {
+        SCHEDULER.with_cs(cs, |scheduler| {
             let &mut Thread { tid, prio, .. } = scheduler
                 .current()
                 .expect("Function should be called inside a thread context.");
@@ -57,7 +57,7 @@ impl ThreadList {
     /// Returns the thread's [`ThreadId`] and its previous [`ThreadState`].
     pub fn pop(&mut self, cs: CriticalSection) -> Option<(ThreadId, ThreadState)> {
         let head = self.head?;
-        SCHEDULER.with_mut_cs(cs, |mut scheduler| {
+        SCHEDULER.with_cs(cs, |scheduler| {
             self.head = scheduler.thread_blocklist[usize::from(head)].take();
             let old_state = scheduler.set_state(head, ThreadState::Running);
             Some((head, old_state))
