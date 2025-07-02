@@ -533,7 +533,7 @@ pub unsafe fn start_threading() {
 
         smp::isr_stack_core1_set_limits(isr_stack_core1);
 
-        smp::Chip::startup_other_cores(ISR_STACK_CORE1.take());
+        smp::Chip::startup_other_cores(isr_stack_core1);
     }
     Cpu::start_threading();
 }
