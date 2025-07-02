@@ -1,56 +1,48 @@
 //! This module provides a Mutex-protected [`RefCell`] --- basically a way to ensure
 //! at runtime that some reference is used only once.
-use core::cell::{Ref, RefCell, RefMut};
-use critical_section::{CriticalSection, Mutex, with};
+use core::cell::{Cell, UnsafeCell};
+use critical_section::CriticalSection;
 
 pub(crate) struct EnsureOnce<T> {
-    inner: Mutex<RefCell<T>>,
+    flag: Cell<bool>,
+    inner: UnsafeCell<T>,
 }
+
+unsafe impl<T> Sync for EnsureOnce<T> {}
 
 impl<T> EnsureOnce<T> {
     pub const fn new(inner: T) -> Self {
         Self {
-            inner: Mutex::new(RefCell::new(inner)),
+            flag: Cell::new(false),
+            inner: UnsafeCell::new(inner),
         }
     }
 
+    #[inline]
     pub fn with<F, R>(&self, f: F) -> R
     where
-        F: FnOnce(Ref<'_, T>) -> R,
+        F: FnOnce(&mut T) -> R,
     {
-        with(|cs| self.with_cs(cs, f))
+        critical_section::with(|cs| self.with_cs(cs, f))
     }
 
-    pub fn with_mut<F, R>(&self, f: F) -> R
+    #[inline]
+    pub fn with_cs<F, R>(&self, _cs: CriticalSection<'_>, f: F) -> R
     where
-        F: FnOnce(RefMut<'_, T>) -> R,
+        F: FnOnce(&mut T) -> R,
     {
-        with(|cs| self.with_mut_cs(cs, f))
+        if self.flag.replace(true) {
+            panic!("EnsureOnce check failed");
+        }
+        let inner = unsafe { &mut *self.inner.get() };
+        let res = f(inner);
+        self.flag.set(false);
+        res
     }
 
-    pub fn with_cs<F, R>(&self, cs: CriticalSection<'_>, f: F) -> R
-    where
-        F: FnOnce(Ref<'_, T>) -> R,
-    {
-        f(self.inner.borrow(cs).borrow())
-    }
-
-    pub fn with_mut_cs<F, R>(&self, cs: CriticalSection<'_>, f: F) -> R
-    where
-        F: FnOnce(RefMut<'_, T>) -> R,
-    {
-        f(self.inner.borrow(cs).borrow_mut())
-    }
-
-    // pub fn borrow_mut<'a>(&'a self, cs: &'a CriticalSection<'_>) -> RefMut<T> {
-    //     self.inner.borrow(cs).borrow_mut()
-    // }
-    // pub fn borrow<'a>(&'a self, cs: &'a CriticalSection<'_>) -> Ref<T> {
-    //     self.inner.borrow(cs).borrow()
-    // }
-
-    #[allow(dead_code)]
-    pub fn as_ptr(&self, cs: CriticalSection<'_>) -> *mut T {
-        self.inner.borrow(cs).as_ptr()
+    // SAFETY: caller must ensure that there is no other reference while
+    // the returned `&mut T` is in use.
+    pub unsafe fn get_unchecked(&self) -> &mut T {
+        unsafe { &mut *self.inner.get() }
     }
 }

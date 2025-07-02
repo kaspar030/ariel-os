@@ -38,7 +38,7 @@ impl LockState {
     ///
     /// Panics if called outside of a thread context.
     fn locked_with_current(cs: CriticalSection<'_>) -> Self {
-        let (owner_id, owner_prio) = SCHEDULER.with_mut_cs(cs, |mut scheduler| {
+        let (owner_id, owner_prio) = SCHEDULER.with_cs(cs, |scheduler| {
             let current = scheduler
                 .current()
                 .expect("Function should be called inside a thread context.");
@@ -104,7 +104,7 @@ impl<T> Mutex<T> {
                         // thread in the waitlist.
                         Some(waiter_prio) if waiter_prio > *owner_prio => {
                             // Current mutex owner inherits the priority.
-                            SCHEDULER.with_mut_cs(cs, |mut scheduler| {
+                            SCHEDULER.with_cs(cs, |scheduler| {
                                 scheduler.set_priority(*owner_id, waiter_prio);
                             });
                         }
@@ -152,12 +152,12 @@ impl<T> Mutex<T> {
             } = state
             {
                 // Reset original priority of owner.
-                SCHEDULER.with_mut_cs(cs, |mut scheduler| {
+                SCHEDULER.with_cs(cs, |scheduler| {
                     scheduler.set_priority(*owner_id, *owner_prio);
                 });
                 // Pop next thread from waitlist so that it can acquire the mutex.
                 if let Some((tid, _)) = waiters.pop(cs) {
-                    SCHEDULER.with_mut_cs(cs, |scheduler| {
+                    SCHEDULER.with_cs(cs, |scheduler| {
                         *owner_id = tid;
                         *owner_prio = scheduler.get_unchecked(tid).prio;
                     });

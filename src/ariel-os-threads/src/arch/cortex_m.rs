@@ -292,8 +292,8 @@ global_asm!(
 /// - must not be called manually (only by PendSV)
 unsafe extern "C" fn sched() -> u64 {
     let (current_high_regs, next_high_regs) = loop {
-        if let Some(res) = critical_section::with(|cs| {
-            let scheduler = unsafe { &mut *SCHEDULER.as_ptr(cs) };
+        if let Some(res) = critical_section::with(|_cs| {
+            let scheduler = unsafe { SCHEDULER.get_unchecked() };
 
             #[cfg(feature = "multi-core")]
             scheduler.add_current_thread_to_rq();
