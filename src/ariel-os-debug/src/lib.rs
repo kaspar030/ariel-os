@@ -32,6 +32,13 @@ impl ExitCode {
             Self::Failure => 1,
         }
     }
+    #[allow(dead_code, reason = "not always used due to conditional compilation")]
+    fn to_std_code(self) -> i32 {
+        match self {
+            Self::Success => 0,
+            Self::Failure => 1,
+        }
+    }
 }
 
 /// Terminates the debug output session.
@@ -44,7 +51,7 @@ pub fn exit(code: ExitCode) {
     semihosting::process::exit(code.to_semihosting_code());
 
     #[cfg(feature = "std")]
-    std::process::exit(code.to_semihosting_code());
+    std::process::exit(code.to_std_code());
 
     #[allow(unreachable_code, reason = "stop nagging")]
     let _ = code;
