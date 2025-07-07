@@ -76,6 +76,7 @@ ble-central = ["ariel-os-nrf/ble-central"]
 
 hwrng = [
   "ariel-os-esp/hwrng",
+  "ariel-os-native/hwrng",
   "ariel-os-nrf/hwrng",
   "ariel-os-rp/hwrng",
   "ariel-os-stm32/hwrng",

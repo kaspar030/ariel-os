@@ -29,7 +29,7 @@ rand = { workspace = true, default-features = false, optional = true, features =
 external-interrupts = ["ariel-os-embassy-common/external-interrupts"]
 
 ## Enables seeding the random number generator from hardware.
-hwrng = ["dep:ariel-os-random"]
+hwrng = ["dep:ariel-os-random", "dep:rand"]
 
 ## Enables I2C support.
 i2c = ["ariel-os-embassy-common/i2c"]
