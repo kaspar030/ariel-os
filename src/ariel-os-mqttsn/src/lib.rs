@@ -109,15 +109,6 @@ impl<'a> MqttSn<'a> {
             Ok((n, _, _)) => match Packet::try_from(&self.recv_buf[..n]) {
                 Ok(packet) => {
                     info!("received: {:?}", packet.get_msg_type());
-                    match &packet {
-                        Packet::ConnAck {
-                            header: _,
-                            conn_ack,
-                        } => {
-                            info!("{:?}", conn_ack);
-                        }
-                        _ => {}
-                    }
                     Ok(packet)
                 }
                 Err(_) => {
@@ -203,6 +194,16 @@ impl<'a> MqttSn<'a> {
         }
     }
 
+    async fn ping(&mut self) -> Result<(), Error> {
+        let msg_len = 16u16;
+        let packet = Packet::PingResp {
+            header: Header::new(MsgType::PingResp, msg_len),
+        };
+        packet.write_to_buf(&mut self.send_buf);
+        self.send(msg_len).await?;
+        Ok(())
+    }
+
     pub async fn subscribe(
         &mut self,
         topic: Topic<'_>,
@@ -260,16 +261,24 @@ impl<'a> MqttSn<'a> {
     }
 
     pub async fn expect_message(&mut self) -> Option<&[u8]> {
-        match self.receive().await {
-            Ok(res) => match res {
+        loop {
+            let res: Packet = match self.receive().await {
+                Ok(res) => res,
+                Err(_) => return None,
+            };
+
+            match res {
                 Packet::Publish {
                     header: _,
                     publish: _,
                     data,
-                } => Some(data),
-                _ => None,
-            },
-            Err(_) => None,
+                } => return Some(data),
+                // Packet::PingReq { .. } => match self.ping().await {
+                //     Ok(_) => continue,
+                //     Err(_) => return None,
+                // },
+                _ => return None,
+            };
         }
     }
 

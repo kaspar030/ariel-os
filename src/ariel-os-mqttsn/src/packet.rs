@@ -43,6 +43,13 @@ pub enum Packet<'a> {
         header: Header,
         sub_ack: mvp::SubAck,
     },
+    PingReq {
+        header: Header,
+        client_id: &'a [u8], // >= 2
+    },
+    PingResp {
+        header: Header,
+    },
     // SearchGw {
     //     // delay sending randomly
     //     header: Header,
@@ -74,6 +81,7 @@ pub enum Error {
 impl Packet<'_> {
     pub fn try_from(bytes: &[u8]) -> Result<Packet, Error> {
         info!("bytes: {:?}", bytes);
+
         let header = Header::try_from(bytes).unwrap();
 
         info!("header: {:?}", header);
@@ -155,7 +163,7 @@ impl Packet<'_> {
                 Ok(Packet::Subscribe {
                     header,
                     subscribe,
-                    topic: &bytes[mvp::Subscribe::SIZE..],
+                    topic: &bytes[mvp_size..],
                 })
             }
             MsgType::SubAck => {
@@ -170,7 +178,14 @@ impl Packet<'_> {
             }
             // MsgType::Unsubscribe => {}
             // MsgType::UnsubAck => {}
-            // MsgType::PingReq => {}
+            MsgType::PingReq => {
+                let size = header.size();
+
+                Ok(Packet::PingReq {
+                    header,
+                    client_id: &bytes[size..],
+                })
+            }
             // MsgType::PingResp => {}
             // MsgType::Disconnect => {}
             // MsgType::WillTopicUpd => {}
@@ -237,7 +252,9 @@ impl Packet<'_> {
             // MsgType::Unsubscribe => {}
             // MsgType::UnsubAck => {}
             // MsgType::PingReq => {}
-            // MsgType::PingResp => {}
+            Packet::PingResp { header } => {
+                buf[..header.size()].copy_from_slice(&header.to_be_bytes()[..header.size()]);
+            }
             // MsgType::Disconnect => {}
             // MsgType::WillTopicUpd => {}
             // MsgType::WillTopicEsp => {}
@@ -258,8 +275,9 @@ impl Packet<'_> {
             Packet::RegAck { header, .. } => header.msg_type(),
             Packet::Publish { header, .. } => header.msg_type(),
             Packet::Subscribe { header, .. } => header.msg_type(),
-            // Packet::SearchGw { header, .. } => header.msg_type(),
             Packet::SubAck { header, .. } => header.msg_type(),
+            Packet::PingReq { header, .. } => header.msg_type(),
+            Packet::PingResp { header, .. } => header.msg_type(),
         }
     }
 }

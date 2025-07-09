@@ -59,6 +59,10 @@ async fn mqtt_sn_button(peripherals: pins::Peripherals) {
 
         let mut mqtt_sn = MqttSn::new(unconnected, local, remote);
 
+        // start channel
+
+        Spawner::for_current_executor();
+
         info!("Listening on UDP:1234...");
 
         loop {

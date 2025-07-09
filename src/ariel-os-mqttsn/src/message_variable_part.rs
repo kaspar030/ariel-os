@@ -193,12 +193,6 @@ pub struct UnsubAck {
     msg_id: u16,
 }
 
-// pub struct PingReq {
-//     client_id: u8, // optional
-// }
-//
-// pub struct PingResp {}
-
 #[bitsize(16)]
 #[derive(TryFromBits, DebugBits, PartialEq)]
 pub struct Disconnect {
