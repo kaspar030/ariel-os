@@ -1,0 +1,34 @@
+{
+  "rust-analyzer.cargo.features": [
+    "coap",
+    "csprng",
+    "dns",
+    "external-interrupts",
+    "hwrng",
+    "i2c",
+    "mdns",
+    "net",
+    "spi",
+    "storage",
+    "tcp",
+    "udp",
+    "usb",
+    "usb-ethernet",
+    "semihosting",
+    "single-core",
+    "executor-interrupt",
+    "rtt-target",
+    "panic-printing",
+    "defmt",
+    "debug-console",
+    // "wifi-esp",
+    "wifi-cyw43"
+  ],
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.server.extraEnv": {
+    "RUSTUP_TOOLCHAIN": "nightly",
+    "CARGO_BUILD_TARGET": "thumbv7em-none-eabi",
+    "CARGO_TARGET_THUMBV7EM_NONE_EABI_RUSTFLAGS": "--cfg context=\"stm32wb55rg\" --cfg context=\"stm32\" --cfg context=\"rp\" --cfg context=\"rp235xa\" --cfg context=\"rpi-pico2-w\" --cfg context=\"nrf52\" --cfg context=\"nrf52840\" --cfg context=\"nrf\" --cfg context=\"espressif-esp32-c6-devkitc-1\" --cfg context=\"esp32-c6-wroom-1\" --cfg context=\"esp32c6\" --cfg context=\"esp\" --cfg context=\"ariel-os\" --cfg context=\"default\" -Clink-arg=-Tlinkall.x -C force-frame-pointers --cfg stable -Cembed-bitcode=yes -Clto=fat -Ccodegen-units=1 -Clink-arg=-Tdefmt.x --cfg context=\"riscv\" -Clink-arg=-Tisr_stack.x -Clink-arg=-Tlinkme-region-alias.x -Clink-arg=-Tlinkme.x"
+  },
+  "rust-analyzer.cargo.allTargets": false
+}

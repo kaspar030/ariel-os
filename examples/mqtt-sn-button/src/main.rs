@@ -8,7 +8,7 @@ use ariel_os::{
     net,
     time::{Duration, Timer},
 };
-use ariel_os_mqttsn::{udp_nal, MqttSn, Topic};
+use ariel_os_mqttsn::{MqttSn, Topic, udp_nal};
 use core::net::SocketAddr;
 use embassy_net::udp::{PacketMetadata, UdpSocket};
 
@@ -58,10 +58,6 @@ async fn mqtt_sn_button(peripherals: pins::Peripherals) {
         let remote: SocketAddr = "10.42.0.1:1884".parse().unwrap();
 
         let mut mqtt_sn = MqttSn::new(unconnected, local, remote);
-
-        // start channel
-
-        Spawner::for_current_executor();
 
         info!("Listening on UDP:1234...");
 

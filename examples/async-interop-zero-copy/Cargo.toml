@@ -1,0 +1,16 @@
+[package]
+name = "async-interop-zero-copy"
+license.workspace = true
+edition.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+embassy-executor = { workspace = true, default-features = false }
+embassy-sync = { workspace = true, default-features = false }
+static_cell = { workspace = true }
+heapless = { workspace = true }
+ariel-os = { path = "../../src/ariel-os", features = ["time"] }
+ariel-os-boards = { path = "../../src/ariel-os-boards" }

@@ -1,0 +1,15 @@
+[package]
+name = "async-interop"
+license.workspace = true
+edition.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+embassy-executor = { workspace = true, default-features = false }
+embassy-sync = { workspace = true, default-features = false }
+ariel-os = { path = "../../src/ariel-os", features = ["time"] }
+ariel-os-boards = { path = "../../src/ariel-os-boards" }
+heapless = { workspace = true }

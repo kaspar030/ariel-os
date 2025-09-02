@@ -618,6 +618,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-interop"
+version = "0.0.0"
+dependencies = [
+ "ariel-os",
+ "ariel-os-boards",
+ "embassy-executor",
+ "embassy-sync 0.6.2",
+ "heapless 0.8.0",
+]
+
+[[package]]
+name = "async-interop-zero-copy"
+version = "0.0.0"
+dependencies = [
+ "ariel-os",
+ "ariel-os-boards",
+ "embassy-executor",
+ "embassy-sync 0.6.2",
+ "heapless 0.8.0",
+ "static_cell",
+]
+
+[[package]]
 name = "atomic-polyfill"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3890,6 +3913,26 @@ name = "minimal-lexical"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
+
+[[package]]
+name = "mqtt-sn-async"
+version = "0.0.0"
+dependencies = [
+ "arbitrary-int",
+ "ariel-os",
+ "ariel-os-boards",
+ "ariel-os-embassy",
+ "ariel-os-mqttsn",
+ "bilge",
+ "embassy-futures",
+ "embassy-net",
+ "embassy-sync 0.6.2",
+ "embedded-io-async",
+ "embedded-nal-async",
+ "embedded-time",
+ "heapless 0.8.0",
+ "log",
+]
 
 [[package]]
 name = "mqtt-sn-button"
