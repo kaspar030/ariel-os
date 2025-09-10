@@ -103,7 +103,7 @@ impl<'a> MqttSn<'a> {
         }
     }
 
-    async fn receive(&mut self) -> Result<Packet, Error> {
+    async fn receive(&mut self) -> Result<Packet<'_>, Error> {
         info!("Receiving...");
         match self.socket.receive_into(&mut self.recv_buf).await {
             Ok((n, _, _)) => match Packet::try_from(&self.recv_buf[..n]) {
@@ -209,7 +209,7 @@ impl<'a> MqttSn<'a> {
         topic: Topic<'_>,
         dup: bool,
         qos: QoS,
-    ) -> Result<Topic, Error> {
+    ) -> Result<Topic<'_>, Error> {
         if self.state != State::Active {
             return Err(InvalidState);
         }

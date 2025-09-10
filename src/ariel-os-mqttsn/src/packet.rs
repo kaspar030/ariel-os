@@ -79,7 +79,7 @@ pub enum Error {
 }
 
 impl Packet<'_> {
-    pub fn try_from(bytes: &[u8]) -> Result<Packet, Error> {
+    pub fn try_from(bytes: &[u8]) -> Result<Packet<'_>, Error> {
         info!("bytes: {:?}", bytes);
 
         let header = Header::try_from(bytes).unwrap();
