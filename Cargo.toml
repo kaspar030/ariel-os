@@ -18,6 +18,7 @@ members = [
     "src/ariel-os-identity",
     "src/ariel-os-macros",
     "src/ariel-os-mqttsn",
+    "src/ariel-os-mqttsn-async",
     "src/ariel-os-nrf",
     "src/ariel-os-power",
     "src/ariel-os-random",
@@ -118,6 +119,7 @@ ariel-os-esp = { path = "src/ariel-os-esp" }
 ariel-os-hal = { path = "src/ariel-os-hal", default-features = false }
 ariel-os-identity = { path = "src/ariel-os-identity" }
 ariel-os-mqttsn = { path = "src/ariel-os-mqttsn" }
+ariel-os-mqttsn-async = { path = "src/ariel-os-mqttsn-async" }
 ariel-os-nrf = { path = "src/ariel-os-nrf" }
 ariel-os-power = { path = "src/ariel-os-power" }
 ariel-os-random = { path = "src/ariel-os-random" }
