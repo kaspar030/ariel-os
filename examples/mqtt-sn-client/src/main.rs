@@ -2,7 +2,7 @@
 #![no_std]
 
 use ariel_os::{debug::log::*, net};
-use ariel_os_mqttsn::{flags::QoS, udp_nal, MqttSn, Topic};
+use ariel_os_mqttsn::{MqttSn, Topic, flags::QoS, udp_nal};
 use core::net::SocketAddr;
 use embassy_net::udp::{PacketMetadata, UdpSocket};
 
@@ -43,7 +43,7 @@ async fn mqtt_sn_client() {
             }
         };
 
-        let remote: SocketAddr = "10.42.0.1:1884".parse().unwrap();
+        let remote: SocketAddr = "192.168.1.129:1884".parse().unwrap();
 
         let mut mqtt_sn = MqttSn::new(unconnected, local, remote);
 
