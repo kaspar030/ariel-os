@@ -1,0 +1,4 @@
+apps:
+  - name: workqueue
+    selects:
+      - sw/threading

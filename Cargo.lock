@@ -6208,6 +6208,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "workqueue"
+version = "0.0.0"
+dependencies = [
+ "ariel-os",
+ "ariel-os-boards",
+]
+
+[[package]]
 name = "writeable"
 version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
