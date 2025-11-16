@@ -1,11 +1,6 @@
-use core::cell::{RefCell, RefMut};
 use embassy_executor::Spawner;
 use embassy_nrf::peripherals;
-use embassy_sync::{
-    blocking_mutex::raw::CriticalSectionRawMutex,
-    mutex::{Mutex, MutexGuard},
-    once_lock::OnceLock,
-};
+use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use nrf_sdc::{
     self as sdc, SoftdeviceController,
     mpsl::{self, MultiprotocolServiceLayer},
