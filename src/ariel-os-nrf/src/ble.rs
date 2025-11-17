@@ -1,6 +1,8 @@
 use embassy_executor::Spawner;
 use embassy_nrf::peripherals;
-use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
+use embassy_sync::{
+    blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex, once_lock::OnceLock,
+};
 use nrf_sdc::{
     self as sdc, SoftdeviceController,
     mpsl::{self, MultiprotocolServiceLayer},
@@ -18,8 +20,9 @@ pub type BleStack = Stack<'static, SoftdeviceController<'static>, DefaultPacketP
 
 static STACK: StaticCell<SameExecutorCell<BleStack>> = StaticCell::new();
 // The stack can effectively only be taken by a single application; once taken, the Option is None.
-static STACKREF: Mutex<CriticalSectionRawMutex, Option<&'static mut SameExecutorCell<BleStack>>> =
-    Mutex::new(None);
+static STACKREF: OnceLock<
+    Mutex<CriticalSectionRawMutex, Option<&'static mut SameExecutorCell<BleStack>>>,
+> = OnceLock::new();
 static MPSL: StaticCell<MultiprotocolServiceLayer<'_>> = StaticCell::new();
 static SDC_MEM: StaticCell<sdc::Mem<SDC_MEM_SIZE>> = StaticCell::new();
 static RNG: StaticCell<ariel_os_random::CryptoRngSend> = StaticCell::new();
@@ -73,8 +76,10 @@ const L2CAP_RXQ: u8 = 2;
 // Panics when called from the wrong executor.
 pub async fn ble_stack() -> &'static mut BleStack {
     STACKREF
+        .get()
+        .await
         .try_lock()
-        .expect("Lock is released right away; this would only happen if two tasks are trying, and then one of them would later panic")
+        .expect("Two tasks racing for lock, one would fail the main-executor check")
         .take()
         .expect("Stack was already taken")
         .get_mut_async()
@@ -239,7 +244,8 @@ pub fn driver(p: Peripherals, spawner: Spawner, config: ariel_os_embassy_common:
 
     let stack = trouble_host::new(sdc, resources).set_random_address(config.address);
     let stackref = STACK.init(SameExecutorCell::new(stack, spawner));
-    *STACKREF.try_lock().unwrap() = Some(stackref);
+    // Error case is unrechable: just init'ed another once item.
+    let _ = STACKREF.init(Some(stackref).into());
 
     debug!("nRF BLE driver initialized");
 }
