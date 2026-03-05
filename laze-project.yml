@@ -562,6 +562,7 @@ contexts:
     parent: stm32
     selects:
       - cortex-m0
+      - ram-small
     provides:
       - has_storage_support
     env:
