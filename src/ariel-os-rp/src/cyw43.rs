@@ -104,8 +104,16 @@ pub async fn device<'a, 'b: 'a>(
 
     #[cfg(feature = "ble-cyw43")]
     let (net_device, mut net_control, runner, ble_controller) = {
-        let (net_device, bt_device, control, runner) =
-            cyw43::new_with_bluetooth(STATE.init_with(cyw43::State::new), pwr, spi, fw, btfw).await;
+        let (net_device, bt_device, control, runner) = cyw43::new_with_bluetooth(
+            STATE.init_with(cyw43::State::new),
+            pwr,
+            spi,
+            fw,
+            btfw,
+            nvram,
+        )
+        .await;
+
         let ble_controller = ExternalController::new(bt_device);
 
         (net_device, control, runner, ble_controller)
