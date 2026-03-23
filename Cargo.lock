@@ -2343,7 +2343,7 @@ dependencies = [
 [[package]]
 name = "embassy-rp"
 version = "0.10.0"
-source = "git+https://github.com/ariel-os/embassy?rev=0bee931086e431ea2d7923257d84eb018a43e554#0bee931086e431ea2d7923257d84eb018a43e554"
+source = "git+https://github.com/ariel-os/embassy?rev=601554c86b11a0b787803662b1823091e0c8bd99#601554c86b11a0b787803662b1823091e0c8bd99"
 dependencies = [
  "cfg-if",
  "chrono",
