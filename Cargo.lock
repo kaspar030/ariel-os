@@ -275,14 +275,14 @@ dependencies = [
  "const-str",
  "const_panic",
  "critical-section",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-executor",
  "embassy-futures",
- "embassy-hal-internal 0.5.0",
+ "embassy-hal-internal",
  "embassy-net",
  "embassy-nrf",
  "embassy-rp",
- "embassy-stm32 0.6.0",
+ "embassy-stm32",
  "embassy-sync 0.8.0",
  "embassy-time",
  "embassy-time-queue-utils",
@@ -330,7 +330,7 @@ dependencies = [
  "bt-hci",
  "critical-section",
  "defmt 1.1.0",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-executor",
  "embassy-sync 0.8.0",
  "embassy-time",
@@ -365,9 +365,9 @@ dependencies = [
  "ariel-os-stm32",
  "bt-hci",
  "const_panic",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-executor",
- "embassy-hal-internal 0.5.0",
+ "embassy-hal-internal",
  "embassy-sync 0.8.0",
  "embassy-usb",
  "embedded-hal 1.0.0",
@@ -426,7 +426,7 @@ dependencies = [
  "ariel-os-log",
  "ariel-os-random",
  "defmt 1.1.0",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-executor",
  "embassy-net-tuntap",
  "embassy-time",
@@ -446,7 +446,7 @@ dependencies = [
  "ariel-os-rt",
  "cortex-m",
  "defmt 1.1.0",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-executor",
  "embassy-futures",
  "embassy-net",
@@ -500,7 +500,7 @@ dependencies = [
  "cyw43-firmware",
  "cyw43-pio",
  "defmt 1.1.0",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-executor",
  "embassy-net-driver-channel 0.4.0",
  "embassy-rp",
@@ -669,22 +669,22 @@ dependencies = [
  "ariel-os-stm32-mapping",
  "ariel-os-utils",
  "defmt 1.1.0",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-executor",
- "embassy-stm32 0.6.0",
+ "embassy-stm32",
  "embedded-hal-async",
  "embedded-io-async 0.7.0",
  "paste",
  "portable-atomic",
  "static_cell",
- "stm32-metapac 21.0.0",
+ "stm32-metapac",
 ]
 
 [[package]]
 name = "ariel-os-stm32-mapping"
 version = "0.5.0"
 dependencies = [
- "embassy-stm32 0.6.0",
+ "embassy-stm32",
 ]
 
 [[package]]
@@ -2172,29 +2172,12 @@ dependencies = [
 
 [[package]]
 name = "embassy-embedded-hal"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "554e3e840696f54b4c9afcf28a0f24da431c927f4151040020416e7393d6d0d8"
-dependencies = [
- "embassy-futures",
- "embassy-hal-internal 0.3.0",
- "embassy-sync 0.7.2",
- "embedded-hal 0.2.7",
- "embedded-hal 1.0.0",
- "embedded-hal-async",
- "embedded-storage",
- "embedded-storage-async",
- "nb 1.1.0",
-]
-
-[[package]]
-name = "embassy-embedded-hal"
 version = "0.6.0"
 source = "git+https://github.com/ariel-os/embassy?rev=cae68deb86232f1026eb338734273fa7bd1790f4#cae68deb86232f1026eb338734273fa7bd1790f4"
 dependencies = [
  "defmt 1.1.0",
  "embassy-futures",
- "embassy-hal-internal 0.5.0",
+ "embassy-hal-internal",
  "embassy-sync 0.8.0",
  "embassy-time",
  "embedded-hal 0.2.7",
@@ -2245,17 +2228,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dc2d050bdc5c21e0862a89256ed8029ae6c290a93aecefc73084b3002cdebb01"
 dependencies = [
  "defmt 1.1.0",
-]
-
-[[package]]
-name = "embassy-hal-internal"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95285007a91b619dc9f26ea8f55452aa6c60f7115a4edc05085cd2bd3127cd7a"
-dependencies = [
- "cortex-m",
- "critical-section",
- "num-traits",
 ]
 
 [[package]]
@@ -2341,9 +2313,9 @@ dependencies = [
  "critical-section",
  "defmt 1.1.0",
  "document-features",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-futures",
- "embassy-hal-internal 0.5.0",
+ "embassy-hal-internal",
  "embassy-sync 0.8.0",
  "embassy-time",
  "embassy-time-driver",
@@ -2375,9 +2347,9 @@ dependencies = [
  "critical-section",
  "defmt 1.1.0",
  "document-features",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-futures",
- "embassy-hal-internal 0.5.0",
+ "embassy-hal-internal",
  "embassy-sync 0.8.0",
  "embassy-time",
  "embassy-time-driver",
@@ -2406,51 +2378,6 @@ dependencies = [
 
 [[package]]
 name = "embassy-stm32"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d972eab325cc96afee98f80a91ca6b00249b6356dc0fdbff68b70c200df9fae"
-dependencies = [
- "aligned",
- "bit_field",
- "bitflags 2.13.0",
- "block-device-driver",
- "cfg-if",
- "cortex-m",
- "cortex-m-rt",
- "critical-section",
- "document-features",
- "embassy-embedded-hal 0.5.0",
- "embassy-futures",
- "embassy-hal-internal 0.3.0",
- "embassy-net-driver",
- "embassy-sync 0.7.2",
- "embassy-usb-driver",
- "embassy-usb-synopsys-otg",
- "embedded-can",
- "embedded-hal 0.2.7",
- "embedded-hal 1.0.0",
- "embedded-hal-async",
- "embedded-hal-nb",
- "embedded-io 0.6.1",
- "embedded-io-async 0.6.1",
- "embedded-storage",
- "embedded-storage-async",
- "futures-util",
- "nb 1.1.0",
- "proc-macro2",
- "quote",
- "rand_core 0.6.4",
- "rand_core 0.9.3",
- "sdio-host",
- "static_assertions",
- "stm32-fmc 0.3.2",
- "stm32-metapac 18.0.0",
- "vcell",
- "volatile-register",
-]
-
-[[package]]
-name = "embassy-stm32"
 version = "0.6.0"
 source = "git+https://github.com/ariel-os/embassy?rev=2bce2a9816bad68e3d4b8ecb1b746c6d3810d647#2bce2a9816bad68e3d4b8ecb1b746c6d3810d647"
 dependencies = [
@@ -2464,9 +2391,9 @@ dependencies = [
  "critical-section",
  "defmt 1.1.0",
  "document-features",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-futures",
- "embassy-hal-internal 0.5.0",
+ "embassy-hal-internal",
  "embassy-net-driver",
  "embassy-sync 0.8.0",
  "embassy-time",
@@ -2494,9 +2421,9 @@ dependencies = [
  "regex",
  "sdio-host",
  "static_assertions",
- "stm32-fmc 0.4.0",
+ "stm32-fmc",
  "stm32-hrtim",
- "stm32-metapac 21.0.0",
+ "stm32-metapac",
  "trait-set",
  "vcell",
  "volatile-register",
@@ -2966,7 +2893,7 @@ dependencies = [
  "delegate",
  "digest",
  "document-features",
- "embassy-embedded-hal 0.6.0",
+ "embassy-embedded-hal",
  "embassy-futures",
  "embassy-sync 0.8.0",
  "embassy-usb-driver",
@@ -4811,7 +4738,7 @@ dependencies = [
  "bt-hci",
  "critical-section",
  "defmt 1.1.0",
- "embassy-hal-internal 0.5.0",
+ "embassy-hal-internal",
  "embassy-nrf",
  "embassy-sync 0.8.0",
  "embedded-io 0.7.1",
@@ -6255,15 +6182,6 @@ dependencies = [
 
 [[package]]
 name = "stm32-fmc"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7f0639399e2307c2446c54d91d4f1596343a1e1d5cab605b9cce11d0ab3858c"
-dependencies = [
- "embedded-hal 0.2.7",
-]
-
-[[package]]
-name = "stm32-fmc"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72692594faa67f052e5e06dd34460951c21e83bc55de4feb8d2666e2f15480a2"
@@ -6285,22 +6203,12 @@ dependencies = [
 [[package]]
 name = "stm32-lcd-driver"
 version = "0.1.0"
-source = "git+https://codeberg.org/AudaciousAxiom/stm32-lcd-driver.git?rev=7ebcb1624960047ec3a12b98c48c7c91575c8b74#7ebcb1624960047ec3a12b98c48c7c91575c8b74"
+source = "git+https://codeberg.org/AudaciousAxiom/stm32-lcd-driver.git?rev=96824d13ca#96824d13ca727aeee46d1e403cf733880c055515"
 dependencies = [
  "critical-section",
- "embassy-stm32 0.4.0",
+ "embassy-stm32",
  "embassy-time",
- "stm32-metapac 18.0.0",
-]
-
-[[package]]
-name = "stm32-metapac"
-version = "18.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6fd8ec3a292a0d9fc4798416a61b21da5ae50341b2e7b8d12e662bf305366097"
-dependencies = [
- "cortex-m",
- "cortex-m-rt",
+ "stm32-metapac",
 ]
 
 [[package]]
