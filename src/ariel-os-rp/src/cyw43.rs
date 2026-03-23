@@ -46,7 +46,7 @@ pub async fn join(mut control: cyw43::Control<'static>) {
 }
 
 #[embassy_executor::task]
-async fn wifi_cyw43_task(runner: Runner<'static, Output<'static>, CywSpi>) -> ! {
+async fn wifi_cyw43_task(runner: Runner<'static, cyw43::SpiBus>) -> ! {
     runner.run().await
 }
 
