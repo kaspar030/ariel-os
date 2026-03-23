@@ -270,7 +270,7 @@ dependencies = [
  "ariel-os-rt",
  "ariel-os-threads",
  "ariel-os-utils",
- "bt-hci 0.8.1",
+ "bt-hci",
  "critical-section",
  "defmt 1.1.1",
  "embassy-embedded-hal",
@@ -304,7 +304,7 @@ dependencies = [
  "ariel-os-nrf",
  "ariel-os-rp",
  "ariel-os-stm32",
- "bt-hci 0.8.1",
+ "bt-hci",
  "const_panic",
  "embassy-embedded-hal",
  "embassy-executor",
@@ -442,7 +442,7 @@ dependencies = [
  "ariel-os-random",
  "ariel-os-rt",
  "ariel-os-utils",
- "bt-hci 0.8.1",
+ "bt-hci",
  "critical-section",
  "cyw43",
  "cyw43-firmware",
@@ -990,33 +990,6 @@ dependencies = [
  "embedded-io-async 0.7.0",
  "futures-intrusive",
  "heapless 0.8.0",
-]
-
-[[package]]
-name = "bt-hci"
-version = "0.10.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f63b3d6f0ef006d9b87a075705d6c142b03681ad34090659647f0e227c1c667f"
-dependencies = [
- "bt-hci-transport",
- "btuuid",
- "defmt 1.1.1",
- "embassy-sync 0.8.0",
- "embedded-io 0.7.1",
- "embedded-io-async 0.7.0",
- "futures-intrusive",
- "heapless 0.8.0",
-]
-
-[[package]]
-name = "bt-hci-transport"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ffb9819c69cf88877f5eebc8c5ade0ab50f2bf9475bbb3eb714d66c55b0cb64"
-dependencies = [
- "defmt 1.1.1",
- "embedded-io 0.7.1",
- "embedded-io-async 0.7.0",
 ]
 
 [[package]]
@@ -1678,7 +1651,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "033e856bf6f38c96fee3e3f398cceff0ca2c2fae5db255bcd23495216c7047da"
 dependencies = [
  "aligned",
- "bt-hci 0.8.1",
+ "bt-hci",
  "cortex-m",
  "cortex-m-rt",
  "defmt 1.1.1",
@@ -2978,7 +2951,7 @@ version = "0.18.0"
 source = "git+https://github.com/ariel-os/esp-hal?rev=ce9bcf390ab6b7abc8ae3bc4989360a493c354e7#ce9bcf390ab6b7abc8ae3bc4989360a493c354e7"
 dependencies = [
  "allocator-api2",
- "bt-hci 0.8.1",
+ "bt-hci",
  "cfg-if",
  "defmt 1.1.1",
  "docsplay",
@@ -4643,9 +4616,8 @@ dependencies = [
 
 [[package]]
 name = "nrf-mpsl"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61c3fae25579f57d60d5cbc9b1838bc0c7f13539a5ede1667dc2e27fc0f539d2"
+version = "0.3.0"
+source = "git+https://github.com/ariel-os/nrf-sdc?rev=fd518ccfdde702ecc58f9a52b0c69a5940e88839#fd518ccfdde702ecc58f9a52b0c69a5940e88839"
 dependencies = [
  "cfg-if",
  "cortex-m",
@@ -4660,9 +4632,8 @@ dependencies = [
 
 [[package]]
 name = "nrf-mpsl-sys"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7e0f91bc35e6d8192106f8d2c24be600e97769024e82f1babc6b4fd5b7b8995"
+version = "0.2.1"
+source = "git+https://github.com/ariel-os/nrf-sdc?rev=fd518ccfdde702ecc58f9a52b0c69a5940e88839#fd518ccfdde702ecc58f9a52b0c69a5940e88839"
 dependencies = [
  "bindgen 0.72.1",
  "doxygen-rs",
@@ -4691,11 +4662,9 @@ dependencies = [
 [[package]]
 name = "nrf-sdc"
 version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5916d1521376d6876d0b0e3353e9affa03ce55daa9346188a5815db1c2eb84d"
+source = "git+https://github.com/ariel-os/nrf-sdc?rev=fd518ccfdde702ecc58f9a52b0c69a5940e88839#fd518ccfdde702ecc58f9a52b0c69a5940e88839"
 dependencies = [
- "bt-hci 0.10.1",
- "bt-hci-transport",
+ "bt-hci",
  "critical-section",
  "defmt 1.1.1",
  "embassy-nrf 0.11.0",
@@ -4709,9 +4678,8 @@ dependencies = [
 
 [[package]]
 name = "nrf-sdc-sys"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "974a5010cc3a61b43e82ee6f9a2bfd80d894c8720dad08b87376f8a3048c1ecf"
+version = "0.2.1"
+source = "git+https://github.com/ariel-os/nrf-sdc?rev=fd518ccfdde702ecc58f9a52b0c69a5940e88839#fd518ccfdde702ecc58f9a52b0c69a5940e88839"
 dependencies = [
  "bindgen 0.72.1",
  "doxygen-rs",
@@ -6720,7 +6688,7 @@ version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1df7817cead4b83dfbeeaa59736ecbc97c30b21dc3bfc0cc2ce8a6687f70b37a"
 dependencies = [
- "bt-hci 0.8.1",
+ "bt-hci",
  "defmt 1.1.1",
  "embassy-futures",
  "embassy-sync 0.7.2",

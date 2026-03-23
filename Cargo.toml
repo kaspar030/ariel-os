@@ -189,7 +189,13 @@ serde = { version = "1.0.197", default-features = false }
 static_cell = { version = "2.1.1", default-features = false }
 trouble-host = { version = "0.6.0" }
 
-nrf-sdc = { version = "0.4.0" }
+# nrf-sdc = { version = "0.4.0" }
+# nrf-sdc 0.4.0 requires bt-hci 0.11, which cyw43 and esp-hal have not caught
+# up with yet.
+# This branch points to the latest bt-hci 0.8 commit, with backported support
+# for embassy-nrf 0.11.
+# nrf-sdc-v0.4.0+bt-hci-0.8+embassy-nrf-0.11
+nrf-sdc = { git = "https://github.com/ariel-os/nrf-sdc", rev = "fd518ccfdde702ecc58f9a52b0c69a5940e88839" }
 
 futures-util = { version = "0.3.32", default-features = false }
 nrf-modem = { version = "0.11.0" }
