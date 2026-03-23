@@ -4,7 +4,7 @@
 )]
 mod rpi_pico_w;
 
-use cyw43::{Control, JoinError, Runner};
+use cyw43::{Control, Runner};
 use embassy_executor::Spawner;
 use embassy_rp::{
     dma::Channel,
@@ -20,7 +20,7 @@ use ariel_os_embassy_common::cell::SameExecutorCell;
 #[cfg(feature = "ble-cyw43")]
 use bt_hci::controller::ExternalController;
 #[cfg(feature = "wifi")]
-use cyw43::JoinOptions;
+use cyw43::{JoinError, JoinOptions};
 
 #[cfg(feature = "ble-cyw43")]
 use crate::ble::{self, SLOTS};
