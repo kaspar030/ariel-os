@@ -30,7 +30,7 @@ embassy-net = { git = "https://github.com/ariel-os/embassy", rev = "37683fe299f1
 # branch = "embassy-nrf-v0.10.0+ariel-os"
 embassy-nrf = { git = "https://github.com/ariel-os/embassy", rev = "791f31c20e3e0edea2a91024903993b32ee74873" }
 # branch = "embassy-rp-v0.10.0+ariel-os"
-embassy-rp = { git = "https://github.com/ariel-os/embassy", rev = "0bee931086e431ea2d7923257d84eb018a43e554" }
+embassy-rp = { git = "https://github.com/ariel-os/embassy", rev = "14f8b1a9769f4d0aa1f87ce687dace56bd96ae24" }
 # branch = "embassy-stm32-v0.6.0+ariel-os"
 embassy-stm32 = { git = "https://github.com/ariel-os/embassy", rev = "2bce2a9816bad68e3d4b8ecb1b746c6d3810d647" }
 # branch = "embassy-time-v0.5.1+ariel-os"
