@@ -7557,8 +7557,3 @@ dependencies = [
  "quote",
  "syn 2.0.114",
 ]
-
-[[patch.unused]]
-name = "cyw43"
-version = "0.5.0"
-source = "git+https://github.com/ariel-os/embassy?rev=603583d9#603583d94cb7ba14b3a6bbb84c8c5fea8bffea0d"
