@@ -103,8 +103,15 @@ pub async fn device<'a, 'b: 'a>(
 
     #[cfg(feature = "ble-cyw43")]
     let (net_device, mut control, runner) = {
-        let (net_device, bt_device, control, runner) =
-            cyw43::new_with_bluetooth(STATE.init_with(cyw43::State::new), pwr, spi, fw, btfw).await;
+        let (net_device, bt_device, control, runner) = cyw43::new_with_bluetooth(
+            STATE.init_with(cyw43::State::new),
+            pwr,
+            spi,
+            fw,
+            btfw,
+            nvram,
+        )
+        .await;
         let controller: ExternalController<_, SLOTS> = ExternalController::new(bt_device);
         let resources = ariel_os_embassy_common::ble::get_ble_host_resources();
         let mut rng = ariel_os_random::crypto_rng();
