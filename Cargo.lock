@@ -223,7 +223,7 @@ dependencies = [
  "embassy-hal-internal",
  "embassy-net",
  "embassy-net-wiznet",
- "embassy-nrf 0.10.0",
+ "embassy-nrf",
  "embassy-rp",
  "embassy-stm32",
  "embassy-sync 0.8.0",
@@ -392,7 +392,7 @@ dependencies = [
  "embassy-futures",
  "embassy-net",
  "embassy-net-driver-channel",
- "embassy-nrf 0.10.0",
+ "embassy-nrf",
  "embassy-sync 0.8.0",
  "embedded-hal-async",
  "embedded-io-async 0.7.0",
@@ -409,7 +409,7 @@ dependencies = [
 name = "ariel-os-nrf-time"
 version = "0.6.0"
 dependencies = [
- "embassy-nrf 0.10.0",
+ "embassy-nrf",
 ]
 
 [[package]]
@@ -2211,8 +2211,8 @@ dependencies = [
 
 [[package]]
 name = "embassy-nrf"
-version = "0.10.0"
-source = "git+https://github.com/ariel-os/embassy?rev=791f31c20e3e0edea2a91024903993b32ee74873#791f31c20e3e0edea2a91024903993b32ee74873"
+version = "0.11.0"
+source = "git+https://github.com/ariel-os/embassy?rev=dc494d8677bb8d8c493940d5c85112662b682aab#dc494d8677bb8d8c493940d5c85112662b682aab"
 dependencies = [
  "bitflags 2.13.2",
  "cfg-if",
@@ -2229,6 +2229,7 @@ dependencies = [
  "embassy-time-driver",
  "embassy-time-queue-utils",
  "embassy-usb-driver",
+ "embassy-usb-synopsys-otg 0.4.0",
  "embedded-hal 0.2.7",
  "embedded-hal 1.0.0",
  "embedded-hal-async",
@@ -2237,38 +2238,8 @@ dependencies = [
  "embedded-storage",
  "embedded-storage-async",
  "fixed",
- "nrf-pac 0.3.0",
+ "nrf-pac",
  "optfield",
- "rand_core 0.6.4",
- "rand_core 0.9.3",
-]
-
-[[package]]
-name = "embassy-nrf"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82051f67e8a06a8faebd183f62cfade184c96be68126c5f064abb8223a591ff1"
-dependencies = [
- "bitflags 2.13.2",
- "cfg-if",
- "cortex-m",
- "cortex-m-rt",
- "critical-section",
- "document-features",
- "embassy-embedded-hal",
- "embassy-futures",
- "embassy-hal-internal",
- "embassy-sync 0.8.0",
- "embassy-usb-driver",
- "embedded-hal 0.2.7",
- "embedded-hal 1.0.0",
- "embedded-hal-async",
- "embedded-io 0.7.1",
- "embedded-io-async 0.7.0",
- "embedded-storage",
- "embedded-storage-async",
- "fixed",
- "nrf-pac 0.4.0",
  "rand_core 0.10.1",
  "rand_core 0.6.4",
  "rand_core 0.9.3",
@@ -2339,7 +2310,7 @@ dependencies = [
  "embassy-time-driver",
  "embassy-time-queue-utils",
  "embassy-usb-driver",
- "embassy-usb-synopsys-otg",
+ "embassy-usb-synopsys-otg 0.3.3",
  "embedded-can",
  "embedded-hal 0.2.7",
  "embedded-hal 1.0.0",
@@ -2482,6 +2453,20 @@ name = "embassy-usb-synopsys-otg"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fb205e26d59e483e8c48f91f637ec217ec7e2cfb0b61d50482301b991b4ff431"
+dependencies = [
+ "critical-section",
+ "defmt 1.1.1",
+ "embassy-sync 0.8.0",
+ "embassy-time",
+ "embassy-usb-driver",
+ "portable-atomic",
+]
+
+[[package]]
+name = "embassy-usb-synopsys-otg"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6efd0c0e0b21bcf91b475b8fa47347c1df32c9a99728ae1e1b0e6625862dfd1a"
 dependencies = [
  "critical-section",
  "defmt 1.1.1",
@@ -2839,7 +2824,7 @@ dependencies = [
  "embassy-futures",
  "embassy-sync 0.8.0",
  "embassy-usb-driver",
- "embassy-usb-synopsys-otg",
+ "embassy-usb-synopsys-otg 0.3.3",
  "embedded-can",
  "embedded-hal 1.0.0",
  "embedded-hal-async",
@@ -4622,7 +4607,7 @@ dependencies = [
  "cfg-if",
  "cortex-m",
  "defmt 1.1.1",
- "embassy-nrf 0.11.0",
+ "embassy-nrf",
  "embassy-sync 0.8.0",
  "embedded-io 0.7.1",
  "embedded-storage",
@@ -4637,16 +4622,6 @@ source = "git+https://github.com/ariel-os/nrf-sdc?rev=fd518ccfdde702ecc58f9a52b0
 dependencies = [
  "bindgen 0.72.1",
  "doxygen-rs",
-]
-
-[[package]]
-name = "nrf-pac"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bddd547fab92b0553ff37032034fd04ce8b8b60d3f9a83f89ea815dfd0400336"
-dependencies = [
- "cortex-m",
- "cortex-m-rt",
 ]
 
 [[package]]
@@ -4667,7 +4642,7 @@ dependencies = [
  "bt-hci",
  "critical-section",
  "defmt 1.1.1",
- "embassy-nrf 0.11.0",
+ "embassy-nrf",
  "embassy-sync 0.8.0",
  "embedded-io 0.7.1",
  "embedded-io-async 0.7.0",
