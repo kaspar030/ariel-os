@@ -391,7 +391,7 @@ dependencies = [
  "embassy-executor",
  "embassy-futures",
  "embassy-net",
- "embassy-net-driver-channel 0.4.0",
+ "embassy-net-driver-channel",
  "embassy-nrf 0.10.0",
  "embassy-sync 0.8.0",
  "embedded-hal-async",
@@ -450,7 +450,7 @@ dependencies = [
  "defmt 1.1.1",
  "embassy-embedded-hal",
  "embassy-executor",
- "embassy-net-driver-channel 0.3.2",
+ "embassy-net-driver-channel",
  "embassy-rp",
  "embedded-hal-async",
  "embedded-io-async 0.7.0",
@@ -1683,7 +1683,7 @@ dependencies = [
  "cortex-m-rt",
  "defmt 1.1.1",
  "embassy-futures",
- "embassy-net-driver-channel 0.4.0",
+ "embassy-net-driver-channel",
  "embassy-sync 0.8.0",
  "embassy-time",
  "embedded-hal 1.0.0",
@@ -2200,17 +2200,6 @@ dependencies = [
 
 [[package]]
 name = "embassy-net-driver-channel"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7b2739fbcf6cd206ae08779c7d709087b16577d255f2ea4a45bc4bbbf305b3f"
-dependencies = [
- "embassy-futures",
- "embassy-net-driver",
- "embassy-sync 0.7.2",
-]
-
-[[package]]
-name = "embassy-net-driver-channel"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a07d2eb9f05a6fc876500949856ea1be40773d866d8cb99384f72d0ae4568c16"
@@ -2241,7 +2230,7 @@ checksum = "336e290ec0eedc19e9d0a948d2f715ea187de79da517a0a24e55553c1a185ab8"
 dependencies = [
  "defmt 1.1.1",
  "embassy-futures",
- "embassy-net-driver-channel 0.4.0",
+ "embassy-net-driver-channel",
  "embassy-time",
  "embedded-hal 1.0.0",
  "embedded-hal-async",
@@ -2494,7 +2483,7 @@ dependencies = [
  "bitflags 2.13.2",
  "defmt 1.1.1",
  "embassy-futures",
- "embassy-net-driver-channel 0.4.0",
+ "embassy-net-driver-channel",
  "embassy-sync 0.8.0",
  "embassy-time",
  "embassy-usb-driver",
@@ -4638,7 +4627,7 @@ dependencies = [
  "critical-section",
  "defmt 1.1.1",
  "embassy-futures",
- "embassy-net-driver-channel 0.4.0",
+ "embassy-net-driver-channel",
  "embassy-sync 0.8.0",
  "embassy-time",
  "embedded-io-async 0.7.0",

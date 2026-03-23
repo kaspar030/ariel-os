@@ -14,7 +14,7 @@ ariel-os-utils = { workspace = true }
 critical-section = { workspace = true }
 defmt = { workspace = true, optional = true }
 embassy-embedded-hal = { workspace = true, optional = true }
-embassy-net-driver-channel = { version = "0.3.2", default-features = false, optional = true }
+embassy-net-driver-channel = { workspace = true, default-features = false, optional = true }
 embassy-rp = { workspace = true, default-features = false, features = [
   "optfield",
   "rt",
