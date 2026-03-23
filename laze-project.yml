@@ -1016,6 +1016,22 @@ modules:
         RUSTFLAGS:
           - --cfg stable
 
+  - name: qbe-stable
+    help: build with stable Rust using QBE backend
+    provides_unique:
+      - cargo-toolchain
+    env:
+      global:
+        # Using the empty string here, as specifying "+stable" would make rustup
+        # choose the *latest* stable instead of the currently configured version.
+        CARGO_TOOLCHAIN: "+qbe-1.97"
+        RUSTFLAGS:
+          - --cfg stable
+        CARGO_ENV:
+          - RUSTC_BOOTSTRAP=1
+        CARGO_ARGS:
+          - -Zbuild-std=core,alloc
+
   - name: nightly
     help: build with nightly Rust
     provides_unique:
