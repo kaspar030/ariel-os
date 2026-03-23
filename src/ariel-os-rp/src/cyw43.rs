@@ -17,7 +17,7 @@ use static_cell::StaticCell;
 #[cfg(feature = "ble-cyw43")]
 use bt_hci::controller::ExternalController;
 #[cfg(feature = "wifi")]
-use cyw43::JoinOptions;
+use cyw43::{JoinError, JoinOptions};
 
 pub type NetworkDevice = cyw43::NetDriver<'static>;
 
