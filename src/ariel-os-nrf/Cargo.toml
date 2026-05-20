@@ -62,6 +62,9 @@ nrf-sdc = { workspace = true, features = ["nrf5340-net"], optional = true }
 [target.'cfg(context = "nrf54l15-app")'.dependencies]
 embassy-nrf = { workspace = true, features = ["nrf54l15-app-s"] }
 
+[target.'cfg(context = "nrf54lm20-app")'.dependencies]
+embassy-nrf = { workspace = true, features = ["nrf54lm20-app-s"] }
+
 [target.'cfg(context = "nrf9151")'.dependencies]
 embassy-nrf = { workspace = true, features = ["nrf9151-s"] }
 nrf-modem = { workspace = true, features = ["nrf9151"], optional = true }
