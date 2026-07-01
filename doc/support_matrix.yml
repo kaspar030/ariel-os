@@ -737,6 +737,24 @@ chips:
           - a more complete clock configuration needs to be provided
       ethernet: not_available
 
+  stm32g431rb:
+    name: STM32G431RB
+    manufacturer: STMicroelectronics
+    support:
+      gpio: supported
+      debug_channel: supported
+      ethernet_over_usb: needs_testing
+      hwrng: supported
+      i2c_controller: needs_testing
+      spi_main: supported
+      uart: supported
+      logging: supported
+      storage: supported
+      wifi: not_available
+      ble: not_available
+      user_usb: needs_testing
+      ethernet: not_available
+
   stm32h753zi:
     name: STM32H753ZI
     manufacturer: STMicroelectronics
@@ -1247,6 +1265,14 @@ builders:
       wifi: not_available
       ethernet_over_usb: not_available
 
+  st-nucleo-g431rb:
+    chip: stm32g431rb
+    tier: "3"
+    support:
+      user_usb: not_available
+      wifi: not_available
+      ethernet_over_usb: not_available
+
   st-nucleo-h753zi:
     chip: stm32h753zi
     tier: "3"
@@ -1511,6 +1537,11 @@ boards:
     url: https://web.archive.org/web/20250311221905/https://www.st.com/en/evaluation-tools/nucleo-f411re.html
     builders:
       - st-nucleo-f411re
+
+  - name: ST NUCLEO-G431RB
+    url: https://web.archive.org/web/20260318122407/https://www.st.com/en/evaluation-tools/nucleo-g431rb.html
+    builders:
+      - st-nucleo-g431rb
 
   - name: ST NUCLEO-H753ZI
     url: https://web.archive.org/web/20240625050043/https://www.st.com/en/evaluation-tools/nucleo-h753zi.html
