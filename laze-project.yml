@@ -1456,6 +1456,15 @@ modules:
     selects:
       - doc-only
 
+  - name: ble-config-static-address
+    help: Use a static address for BLE, the two most significant bits will be set to 1 to indicate a static random address.
+    selects:
+      - ble
+    env:
+      global:
+        FEATURES:
+          - ariel-os/ble-config-static-address
+
   - name: has_nrf91_modem
     selects:
       - doc-only
