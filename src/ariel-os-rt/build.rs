@@ -54,6 +54,7 @@ fn main() {
             .replace("${ISR_STACKSIZE}", &isr_stacksize);
         std::fs::write(out.join("isr_stack_xtensa.x"), &template).unwrap();
         println!("cargo:rerun-if-changed=isr_stack_xtensa.ld.in");
+        println!("cargo:rerun-if-env-changed=CONFIG_ISR_STACKSIZE");
     }
 
     std::fs::copy("linkme.x", out.join("linkme.x")).unwrap();
