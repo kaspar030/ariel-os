@@ -1047,6 +1047,11 @@ builders:
       user_usb: supported
       ethernet_over_usb: supported
 
+  makerdiary-nrf9151-connect-kit:
+    chip: nrf9151
+    tier: "2"
+    support:
+
   native:
     chip: native-chip
     tier: "1"
@@ -1395,10 +1400,15 @@ boards:
     builders:
       - bbc-microbit-v2
 
-  - name: Makerdiary nRF52840 MDK USB Dongle
+  - name: makerdiary nRF52840 MDK USB Dongle
     url: https://web.archive.org/web/20260508214910/https://wiki.makerdiary.com/nrf52840-mdk-usb-dongle/
     builders:
       - makerdiary-nrf52840-mdk-usb-dongle
+
+  - name: makerdiary nRF9151 Connect Kit
+    url: https://web.archive.org/web/20260522170547/https://makerdiary.com/products/nrf9151-connectkit
+    builders:
+      - makerdiary-nrf9151-connect-kit
 
   - name: native
     url: "#"
