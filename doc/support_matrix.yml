@@ -1400,7 +1400,7 @@ boards:
     builders:
       - bbc-microbit-v2
 
-  - name: Makerdiary nRF52840 MDK USB Dongle
+  - name: makerdiary nRF52840 MDK USB Dongle
     url: https://web.archive.org/web/20260508214910/https://wiki.makerdiary.com/nrf52840-mdk-usb-dongle/
     builders:
       - makerdiary-nrf52840-mdk-usb-dongle
