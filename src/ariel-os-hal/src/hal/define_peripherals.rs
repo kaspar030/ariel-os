@@ -163,8 +163,8 @@ macro_rules! define_uart {
 
         #[allow(nonstandard_style)]
         pub struct $name {
-            tx: $crate::hal::peripheral::Peri<'static, peripherals::$tx>,
-            rx: $crate::hal::peripheral::Peri<'static, peripherals::$rx>,
+            tx: $crate::__peripheral_ty!($tx),
+            rx: $crate::__peripheral_ty!($rx),
         }
 
         impl $crate::hal::TakePeripherals<$name> for &mut $crate::hal::OptionalPeripherals {
@@ -178,8 +178,8 @@ macro_rules! define_uart {
 
         impl $crate::uart::Assignment for $name {
             type Device<'a> = $crate::hal::uart::$device<'a>;
-            type Tx = $crate::hal::peripheral::Peri<'static, peripherals::$tx>;
-            type Rx = $crate::hal::peripheral::Peri<'static, peripherals::$rx>;
+            type Tx = $crate::__peripheral_ty!($tx);
+            type Rx = $crate::__peripheral_ty!($rx);
 
             fn into_pins(self) -> (Self::Tx, Self::Rx) {
                 (self.tx, self.rx)
