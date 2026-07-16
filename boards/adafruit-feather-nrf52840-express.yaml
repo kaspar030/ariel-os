@@ -1,4 +1,4 @@
-version: 0.3.0
+version: 0.4.0
 targets:
   # different names in use: "Adafruit Feather nRF52840 Express" on shop as of
   # 2025-12-14, whereas schematics dating from 2025-05-05 label it as "Adafruit

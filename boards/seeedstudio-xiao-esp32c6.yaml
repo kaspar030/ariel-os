@@ -1,4 +1,4 @@
-version: 0.3.0
+version: 0.4.0
 targets:
   seeedstudio-xiao-esp32c6:
     chip: esp32c6fx4

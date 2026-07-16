@@ -1,4 +1,4 @@
-version: 0.3.0
+version: 0.4.0
 targets:
   makerdiary-nrf52840-mdk-usb-dongle:
     # website: https://wiki.makerdiary.com/nrf52840-mdk-usb-dongle/
