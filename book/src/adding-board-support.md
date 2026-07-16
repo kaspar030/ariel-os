@@ -45,13 +45,13 @@ targets:
     ariel:
       swi: USART2
     leds:
-      led0:
-        pin: PB5
+      # led0
+      - pin: PB5
         color: green
         active: high
     buttons:
-      button0:
-        pin: PC13
+      # button0
+      - pin: PC13
         active: high
 ```
 
