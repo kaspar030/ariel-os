@@ -62,6 +62,7 @@ contexts:
           CHIP_RAM_SIZE_BYTES=${CHIP_RAM_SIZE_BYTES}
           CHIP_LD_INCLUDES=${CHIP_LD_INCLUDES}
           CHIP_MEMORY_SECTION_RESERVE_BYTES=${CHIP_MEMORY_SECTION_RESERVE_BYTES}
+          ESP_PARTITION_FILE=${ESP_PARTITION_FILE}
       PROFILE: release
       PROFILE_DIR: $(if("${PROFILE}"=="dev", "debug", "${PROFILE}"))
       PROBE_RS_PROTOCOL: swd
@@ -460,6 +461,7 @@ contexts:
       - has_hwrng
     env:
       esp_wifi_heapsize_required: $(72*1024)
+      ESP_PARTITION_FILE: ${relroot}/${build-dir}/bin/${builder}/cargo/${RUSTC_TARGET}/${PROFILE_DIR}/${app}-partitions.csv
       RUSTFLAGS:
         # linkall first
         - -Clink-arg=-Tlinkall.x
@@ -1338,12 +1340,12 @@ modules:
       - flashing-tool
     env:
       global:
-        CARGO_RUNNER: '"espflash flash --monitor"'
+        CARGO_RUNNER: '"espflash flash --monitor --partition-table ${ESP_PARTITION_FILE}"'
     tasks:
       flash:
         help: flash the target using `espflash`
         cmd:
-          - espflash flash --after hard-reset ${out} $@
+          - espflash flash --partition-table ${ESP_PARTITION_FILE} --after hard-reset ${out} $@
 
       attach:
         help: attach `espflash` to a running target
