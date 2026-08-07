@@ -463,6 +463,10 @@ contexts:
       RUSTFLAGS:
         # linkall first
         - -Clink-arg=-Tlinkall.x
+      CHIP_NVM_PAGE_SIZE_BYTES: "4096"
+      CHIP_BOOTLOADER_SIZE: "0x9000"
+      CHIP_NVM_START_ADDRESS: ${CHIP_BOOTLOADER_SIZE} # skips the bootloader and partition table space.
+      CHIP_NVM_SIZE_BYTES: "$((1024 * 4096) - ${CHIP_BOOTLOADER_SIZE})"
 
   - name: esp32
     parent: esp
