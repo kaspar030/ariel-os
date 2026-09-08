@@ -56,6 +56,7 @@ contexts:
           CONFIG_ISR_STACKSIZE=${CONFIG_ISR_STACKSIZE}
       PROFILE: release
       PROFILE_DIR: $(if("${PROFILE}"=="dev", "debug", "${PROFILE}"))
+      PROBE_RS: probe-rs
       PROBE_RS_PROTOCOL: swd
       CARGO_PRESHELL: []
 
@@ -1148,36 +1149,36 @@ modules:
 
     env:
       global:
-        CARGO_RUNNER: "'probe-rs run ${PROBE_RS_PROTOCOL} --chip ${PROBE_RS_CHIP} --preverify'"
+        CARGO_RUNNER: "'${PROBE_RS} run ${PROBE_RS_PROTOCOL} --chip ${PROBE_RS_CHIP} --preverify'"
 
     tasks:
       flash-erase-all:
         help: Erases the whole chip including user data. Unlocks it if locked.
         build: false
         cmd:
-          - probe-rs erase --chip ${PROBE_RS_CHIP} --allow-erase-all $@
+          - ${PROBE_RS} erase --chip ${PROBE_RS_CHIP} --allow-erase-all $@
 
       flash:
         help: Flashes the target using probe-rs
         cmd:
-          - probe-rs download --chip ${PROBE_RS_CHIP} ${out} $@
-          - probe-rs reset --chip ${PROBE_RS_CHIP}
+          - ${PROBE_RS} download --chip ${PROBE_RS_CHIP} ${out} $@
+          - ${PROBE_RS} reset --chip ${PROBE_RS_CHIP}
 
       attach:
         help: Attach probe-rs to rtt logging
         build: false
         cmd:
-          - probe-rs attach --chip ${PROBE_RS_CHIP} ${out} $@
+          - ${PROBE_RS} attach --chip ${PROBE_RS_CHIP} ${out} $@
 
       debug:
         help: Starts a probe-rs gdb server
         cmd:
-          - probe-rs gdb --chip ${PROBE_RS_CHIP} $@
+          - ${PROBE_RS} gdb --chip ${PROBE_RS_CHIP} $@
 
       reset:
         help: Resets the target
         cmd:
-          - probe-rs reset --chip ${PROBE_RS_CHIP} $@
+          - ${PROBE_RS} reset --chip ${PROBE_RS_CHIP} $@
 
   - name: openocd
     selects:
