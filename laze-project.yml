@@ -65,6 +65,7 @@ contexts:
       PROFILE: release
       PROFILE_DIR: $(if("${PROFILE}"=="dev", "debug", "${PROFILE}"))
       PROBE_RS: probe-rs
+      PROBEFLEET_BOARD: ${builder}
       PROBE_RS_PROTOCOL: swd
       CARGO_PRESHELL: []
 
@@ -302,6 +303,7 @@ contexts:
       PROBE_RS_CHIP: nrf5340_xxAA
       CHIP_NVM_SIZE_BYTES: "$(1024 * 1024)"
       CHIP_RAM_SIZE_BYTES: "$(512*1024)"
+      PROBEFLEET_BOARD: nrf5340dk
 
   - name: nrf5340-net
     parent: nrf53
@@ -1379,6 +1381,13 @@ modules:
         help: Resets the target
         cmd:
           - ${PROBE_RS} reset --chip ${PROBE_RS_CHIP} $@
+
+  - name: probefleet
+    requires:
+      - probe-rs
+    env:
+      global:
+        PROBE_RS: probefleet sidecar --board ${PROBEFLEET_BOARD} --
 
   - name: openocd
     selects:
