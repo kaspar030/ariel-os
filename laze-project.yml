@@ -57,6 +57,7 @@ contexts:
       PROFILE: release
       PROFILE_DIR: $(if("${PROFILE}"=="dev", "debug", "${PROFILE}"))
       PROBE_RS: probe-rs
+      PROBE_RS_FLEET_BOARD: ${builder}
       PROBE_RS_PROTOCOL: swd
       CARGO_PRESHELL: []
 
@@ -269,6 +270,7 @@ contexts:
       - has_storage_support
     env:
       PROBE_RS_CHIP: nrf5340_xxAA
+      PROBE_RS_FLEET_BOARD: nrf5340dk
 
   - name: nrf5340-net
     parent: nrf53
@@ -1179,6 +1181,13 @@ modules:
         help: Resets the target
         cmd:
           - ${PROBE_RS} reset --chip ${PROBE_RS_CHIP} $@
+
+  - name: probe-rs-fleet
+    requires:
+      - probe-rs
+    env:
+      global:
+        PROBE_RS: probe-rs-fleet sidecar --board ${PROBE_RS_FLEET_BOARD} --
 
   - name: openocd
     selects:
