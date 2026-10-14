@@ -1575,6 +1575,8 @@ modules:
       global:
         FEATURES:
           - ariel-os/wifi-cyw43
+        executor_stacksize_required:
+          - "24576"
 
   - name: has_wifi_cyw43
     selects:
@@ -1699,6 +1701,8 @@ modules:
       global:
         FEATURES:
           - ariel-os/ble-cyw43
+        executor_stacksize_required:
+          - "24576"
 
   - name: has_ble_cyw43
     selects:
