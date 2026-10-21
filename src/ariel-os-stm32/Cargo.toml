@@ -17,6 +17,7 @@ embassy-executor = { workspace = true, default-features = false, features = [
   "platform-cortex-m",
 ] }
 embassy-stm32 = { workspace = true, default-features = false, features = [
+  "gpio-init-analog", # Sets pins as analog inputs at boot to save power.
   "memory-x",
   "optfield",
   "rt",
