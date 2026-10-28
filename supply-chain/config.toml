@@ -421,10 +421,6 @@ version = "0.20.11"
 criteria = "safe-to-deploy"
 
 [[exemptions.darling]]
-version = "0.23.0"
-criteria = "safe-to-deploy"
-
-[[exemptions.darling]]
 version = "0.24.1"
 criteria = "safe-to-deploy"
 
@@ -433,19 +429,11 @@ version = "0.20.11"
 criteria = "safe-to-deploy"
 
 [[exemptions.darling_core]]
-version = "0.23.0"
-criteria = "safe-to-deploy"
-
-[[exemptions.darling_core]]
 version = "0.24.1"
 criteria = "safe-to-deploy"
 
 [[exemptions.darling_macro]]
 version = "0.20.11"
-criteria = "safe-to-deploy"
-
-[[exemptions.darling_macro]]
-version = "0.23.0"
 criteria = "safe-to-deploy"
 
 [[exemptions.darling_macro]]
