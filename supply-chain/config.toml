@@ -25,10 +25,7 @@ url = "https://raw.githubusercontent.com/zcash/rust-ecosystem/main/supply-chain/
 [policy.coapcore]
 audit-as-crates-io = true
 
-[policy.cyw43]
-audit-as-crates-io = true
-
-[policy.cyw43-pio]
+[policy.cyw43-firmware]
 audit-as-crates-io = true
 
 [policy.embassy-embedded-hal]
@@ -50,9 +47,6 @@ audit-as-crates-io = true
 audit-as-crates-io = true
 
 [policy.embassy-time]
-audit-as-crates-io = true
-
-[policy.embassy-usb-synopsys-otg]
 audit-as-crates-io = true
 
 [policy.esp-alloc]
@@ -94,34 +88,10 @@ audit-as-crates-io = true
 [policy.esp-sync]
 audit-as-crates-io = true
 
-[policy.esp-wifi-sys-esp32]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32c2]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32c3]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32c6]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32h2]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32s2]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32s3]
-audit-as-crates-io = true
-
 [policy.nrf-mpsl]
 audit-as-crates-io = true
 
 [policy.nrf-mpsl-sys]
-audit-as-crates-io = true
-
-[policy.nrf-pac]
 audit-as-crates-io = true
 
 [policy.nrf-sdc]
@@ -144,10 +114,6 @@ audit-as-crates-io = true
 
 [[exemptions.aead]]
 version = "0.4.3"
-criteria = "safe-to-deploy"
-
-[[exemptions.aead]]
-version = "0.5.2"
 criteria = "safe-to-deploy"
 
 [[exemptions.aes]]
@@ -440,6 +406,10 @@ criteria = "safe-to-deploy"
 
 [[exemptions.cyw43]]
 version = "0.7.0"
+criteria = "safe-to-deploy"
+
+[[exemptions.cyw43-firmware]]
+version = "0.2.0@git:06bb42531c0445043b3005745afcdce9de8730f4"
 criteria = "safe-to-deploy"
 
 [[exemptions.cyw43-pio]]
@@ -1302,10 +1272,6 @@ criteria = "safe-to-deploy"
 version = "0.1.3"
 criteria = "safe-to-deploy"
 
-[[exemptions.rand_core]]
-version = "0.10.1"
-criteria = "safe-to-deploy"
-
 [[exemptions.rand_pcg]]
 version = "0.3.1"
 criteria = "safe-to-deploy"
@@ -1612,10 +1578,6 @@ criteria = "safe-to-deploy"
 
 [[exemptions.wasm-bindgen-shared]]
 version = "0.2.128"
-criteria = "safe-to-deploy"
-
-[[exemptions.web-time]]
-version = "1.1.0"
 criteria = "safe-to-deploy"
 
 [[exemptions.xtensa-lx]]
