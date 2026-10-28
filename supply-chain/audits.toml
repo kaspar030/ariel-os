@@ -261,6 +261,28 @@ who = "chrysn <chrysn@fsfe.org>"
 criteria = "safe-to-deploy"
 version = "0.7.0"
 
+[[audits.embedded-test]]
+who = "Antoine Lavandier <antoine.lavandier@inria.fr>"
+criteria = "safe-to-deploy"
+delta = "0.7.1 -> 0.7.3"
+notes = """
+This audit skips version 0.7.2 that relies on proc-macro-error3 to remove the need for auditing proc-macro-error3.
+
+No meaningfully new unsafe code. Refactoring moves FFI declarations to `hosting` module and removes requirements for linker-scripts when using with std.
+Also bumps embedded-test-macros dependency to 0.9.0
+"""
+
+[[audits.embedded-test-macros]]
+who = "Antoine Lavandier <antoine.lavandier@inria.fr>"
+criteria = "safe-to-deploy"
+delta = "0.8.0 -> 0.9.0"
+notes = """
+I am doing this multi-version audit to avoid the hassle of dealing with the two versions of embedded-test-macros that rely on proc-macro-error3.
+
+No new unsafe code. Changes mainly amount to dropping proc-macro-error2 in favor of syn::Error.
+This version also removes the requirement on linker script for use with std.
+"""
+
 [[audits.extra-embedded-io-adapters]]
 who = "chrysn <chrysn@fsfe.org>"
 criteria = "safe-to-deploy"
