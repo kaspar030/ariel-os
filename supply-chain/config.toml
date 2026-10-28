@@ -25,10 +25,7 @@ url = "https://raw.githubusercontent.com/zcash/rust-ecosystem/main/supply-chain/
 [policy.coapcore]
 audit-as-crates-io = true
 
-[policy.cyw43]
-audit-as-crates-io = true
-
-[policy.cyw43-pio]
+[policy.cyw43-firmware]
 audit-as-crates-io = true
 
 [policy.embassy-embedded-hal]
@@ -50,9 +47,6 @@ audit-as-crates-io = true
 audit-as-crates-io = true
 
 [policy.embassy-time]
-audit-as-crates-io = true
-
-[policy.embassy-usb-synopsys-otg]
 audit-as-crates-io = true
 
 [policy.esp-alloc]
@@ -94,34 +88,10 @@ audit-as-crates-io = true
 [policy.esp-sync]
 audit-as-crates-io = true
 
-[policy.esp-wifi-sys-esp32]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32c2]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32c3]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32c6]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32h2]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32s2]
-audit-as-crates-io = true
-
-[policy.esp-wifi-sys-esp32s3]
-audit-as-crates-io = true
-
 [policy.nrf-mpsl]
 audit-as-crates-io = true
 
 [policy.nrf-mpsl-sys]
-audit-as-crates-io = true
-
-[policy.nrf-pac]
 audit-as-crates-io = true
 
 [policy.nrf-sdc]
