@@ -408,6 +408,10 @@ criteria = "safe-to-deploy"
 version = "0.7.0"
 criteria = "safe-to-deploy"
 
+[[exemptions.cyw43-firmware]]
+version = "0.2.0@git:06bb42531c0445043b3005745afcdce9de8730f4"
+criteria = "safe-to-deploy"
+
 [[exemptions.cyw43-pio]]
 version = "0.10.0"
 criteria = "safe-to-deploy"
